@@ -32,9 +32,9 @@ class Edit extends Component
     {
         return view('livewire.user.edit')
                         ->with([
-                            'access' => UserAccess::whereIn('id',[1,2,5])->get(),
+                            'access' => UserAccess::where('id','<>',4)->get(),
                             'data' => $this->data
-                        ]);
+                        ]); 
     }
 
     public function mount($id)

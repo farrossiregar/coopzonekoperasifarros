@@ -50,3 +50,13 @@
 .badge.badge-warning.badge-active {background:#f3ad06;color:white}
 .badge.badge-info.badge-active {background:#3C89DA;color:white}
 .badge.badge-primary.badge-active {background:#007bff;color:white}
+
+.show-form-filter{
+    position: absolute;
+    transform: translate3d(15px, 35px, 0px);
+    top: 0px;
+    left: 0px;
+    will-change: transform;
+    display: block;
+    width: 250px;
+}

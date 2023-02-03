@@ -13,7 +13,7 @@ class Index extends Component
 {    
     public $data=[],$kode_produksi,$qty=1,$sub_total=0,$total=0,$msg_error="",$metode_pembayaran=4,$success=false;
     public $no_transaksi='',$transaksi,$jenis_transaksi=2,$msg_error_jenis_transaksi,$no_anggota,$anggota,$temp_anggota;
-    public $status_transaksi=0,$uang_tunai=0,$total_kembali=0,$total_qty=0,$message_metode_pembayaran,$ppn,$total_and_ppn;
+    public $status_transaksi=0,$uang_tunai=0,$total_kembali=0,$total_qty=0,$message_metode_pembayaran,$ppn,$total_and_ppn,$no_kartu_debit_kredit;
     public $user_kasir,$msg_error_anggota,$url_cetak_struk;
     protected $listeners = ['event_bayar' => 'event_bayar',
                             'okeAnggota'=>'okeAnggota',
@@ -77,9 +77,14 @@ class Index extends Component
 
     public function bayar()
     {
-        $this->validate([
-            'total' =>'required'
-        ]);
+        $validate['total'] = 'required';
+
+        if(in_array($this->metode_pembayaran,[7,8])){
+            $validate['no_kartu_debit_kredit'] = 'required';
+        }
+
+        $this->validate($validate);
+
         $this->reset('message_metode_pembayaran');
         //1 Tunai
         if($this->metode_pembayaran==4){
@@ -137,14 +142,22 @@ class Index extends Component
                 'title'=>'Transaksi #'.$this->transaksi->no_transaksi.' berhasil'
             ]);
         }
+
         if($this->anggota) $this->transaksi->user_member_id = $this->anggota->id;
+        
         // kurangin stock
         foreach($this->transaksi->items as $item){
             Product::find($item->product_id)->update(['qty'=>$item->product->qty - $item->qty,'qty_moving'=>$item->product->qty_moving+$item->qty]);
         }
+        
+        /**
+         * Jika bukan paylater maka payment date kosong 
+         */
+        if($this->metode_pembayaran!=3) $this->transaksi->payment_date = date('Y-m-d');
+
         $this->transaksi->metode_pembayaran = $this->metode_pembayaran;
-        $this->transaksi->payment_date = date('Y-m-d');
         $this->transaksi->is_temp = 0;
+        $this->transaksi->no_kartu_debit_kredit = $this->no_kartu_debit_kredit;
         $this->transaksi->status = 1;
         $this->transaksi->save();
 
@@ -241,7 +254,7 @@ class Index extends Component
         $data->jenis_transaksi = $this->jenis_transaksi;
         $data->save();
 
-        $data->no_transaksi =  $data->id.date('ymdhi').\Auth::user()->id.str_pad((Transaksi::count()+1),4, '0', STR_PAD_LEFT);
+        $data->no_transaksi =  $data->id.date('ymdhi').str_pad((Transaksi::count()+1),4, '0', STR_PAD_LEFT);
         $data->save();
 
         $this->emit('set_transaction_id',$data->no_transaksi);

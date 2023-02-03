@@ -1,16 +1,20 @@
 <html>
     <head>
     <style>
-        @page {
-            size: 7.5cm 23.5cm;  potrait; 
-            margin:0 10px; 
-            font-size:10px;
+         @page {
+            font-family: Arial, Helvetica, sans-serif;
+            size: 58mm 23.5cm;  potrait; 
+            margin:0 10px;
+            padding-left:0; 
+            font-size:12px;
         }
         @media print {
             @page {
-                size: 7.5cm 23.5cm;  potrait; 
+                font-family: Arial, Helvetica, sans-serif;
+                padding-left:0; 
+                size: 58mm 23.5cm;  potrait; 
                 margin:0 10px; 
-                font-size:10px;
+                font-size: 12px;
             }
         }
     </style>
@@ -57,7 +61,10 @@
         
         <tr>
             <td colspan="4" style="border-top:1px dotted black;" >
-                <strong>{{$item->metode_pembayaran ? metode_pembayaran($item->metode_pembayaran) : 'TUNAI'}}</strong>
+                <strong>{{$data->metode_pembayaran ? metode_pembayaran($data->metode_pembayaran) : 'TUNAI'}}</strong>
+                 @if(in_array($data->metode_pembayaran,[7,8]))
+                  ({{substr_replace($data->no_kartu_debit_kredit,"*****",-5)}})
+                 @endif
             </td>
         </tr>
         <tr>
@@ -72,18 +79,32 @@
             <td colspan="2">Saving</td>
             <td style="text-align:right;" colspan="2">Rp. 0</td>
         </tr>
-        <tr>
+        <!-- <tr>
             <td colspan="2">DPP</td>
             <td style="text-align:right;" colspan="2">Rp. {{format_idr($total - ($total * 0.11))}}</td>
         </tr>
         <tr>
             <td colspan="2">Pajak</td>
             <td style="text-align:right;" colspan="2">Rp. {{format_idr($total * 0.11)}}</td>
-        </tr>
+        </tr> -->
         <tr>
             <td colspan="5" style="border-top:1px dotted black;" ></td>
         </tr>
+        @if($data->jenis_transaksi==1)
+            <tr>
+                <td colspan="2">{{isset($data->anggota->no_anggota_platinum) ? $data->anggota->no_anggota_platinum .' / '. $data->anggota->name : ''}}</td>
+            </tr>
+            <tr>
+                <td colspan="5" style="border-top:1px dotted black;" ></td>
+            </tr>
+        @endif
     </table>
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
     <p style="text-align:center;">
     Yuk segera download<br/>
     Coopzone mobile apps &<br />

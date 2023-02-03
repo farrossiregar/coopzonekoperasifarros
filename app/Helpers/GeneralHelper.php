@@ -1,6 +1,12 @@
 <?php
 use Illuminate\Support\Str;
 
+function str_replace_first($search, $replace, $subject)
+{
+    $search = '/'.preg_quote($search, '/').'/';
+    return preg_replace($search, $replace, $subject, 1);
+}
+
 function digiflazz($param){
     $username = env('DIGIFLAZZ_USERNAME');  
     $apiKey = env('DIGIFLAZZ_KEY_PROD');
@@ -95,7 +101,7 @@ function status_transaksi($status){
 
 function metode_pembayaran($key=''){
 
-    if($key=='') return [1=>'SIMPANAN',2=>'SIMPANAN',3=>'BAYAR NANTI',4=>'TUNAI',5=>'COOPAY'];
+    if($key=='') return [1=>'SIMPANAN',2=>'SIMPANAN',3=>'BAYAR NANTI',4=>'TUNAI',5=>'COOPAY',7=>'KARTU KREDIT',8=>'KARTU DEBIT'];
 
     switch($key){
         case 1:
@@ -115,6 +121,12 @@ function metode_pembayaran($key=''){
             break;
         case 6:
             return "PAYROLL";
+            break;
+        case 7:
+            return "KARTU KREDIT";
+            break;
+        case 8:
+            return "KARTU DEBIT";
             break;
         default:
             return 'TUNAI';

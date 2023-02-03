@@ -152,10 +152,8 @@
                                         <a href="javascript:void(0);" wire:click="$set('metode_pembayaran',4)" class="list-group-item list-group-item-action {{ $metode_pembayaran==4 ? 'active' : ''}}">Tunai</a>
                                         <a href="javascript:void(0);" wire:click="$set('metode_pembayaran',3)" class="list-group-item list-group-item-action {{ $metode_pembayaran==3 ? 'active' : ''}}">Bayar Nanti</a>
                                         <a href="javascript:void(0);" wire:click="$set('metode_pembayaran',5)" class="list-group-item list-group-item-action {{ $metode_pembayaran==5 ? 'active' : ''}}">Coopay</a>
-                                        <a href="javascript:void(0);" class="list-group-item list-group-item-action disabled">Kartu Kredit</a>
-                                        <a href="javascript:void(0);" class="list-group-item list-group-item-action disabled">Kartu Debit</a>
-                                        <a href="javascript:void(0);" class="list-group-item list-group-item-action disabled">GoPay</a>
-                                        <a href="javascript:void(0);" class="list-group-item list-group-item-action disabled">Dana</a>
+                                        <a href="javascript:void(0);" wire:click="$set('metode_pembayaran',7)" class="list-group-item list-group-item-action {{ $metode_pembayaran==7 ? 'active' : ''}}"">Kartu Kredit</a>
+                                        <a href="javascript:void(0);" wire:click="$set('metode_pembayaran',8)" class="list-group-item list-group-item-action {{ $metode_pembayaran==8 ? 'active' : ''}}"">Kartu Debit</a>
                                     </div>
                                 </div>
                                 <div class="col-8">
@@ -189,13 +187,29 @@
                                                     <td class="text-right text-success" style="font-size:20px;color:red;font-weight:bold;">Rp. {{format_idr($total_kembali)}}</td>
                                                 </tr>
                                             @endif
-                                            @if($metode_pembayaran==3 and $anggota)
+                                            @if($metode_pembayaran==3)
+                                                @if($anggota) 
+                                                    <tr>
+                                                        <th>SALDO LIMIT</th>
+                                                        <td class="text-right text-success" style="font-size:20px;color:red;font-weight:bold;">
+                                                            Rp. {{format_idr($anggota->plafond - $anggota->plafond_digunakan)}}
+                                                        </td>
+                                                    </tr>
+                                                @endif
                                                 <tr>
-                                                    <th>SALDO LIMIT</th>
-                                                    <td class="text-right text-success" style="font-size:20px;color:red;font-weight:bold;">Rp. {{format_idr($anggota->plafond - $anggota->plafond_digunakan)}}</td>
+                                                    <td colspan="2" class="text-center">
+                                                        <div wire:loading.remove wire:target="event_bayar">
+                                                            <label>Gunakan Aplikasi Coopay dan Scan disini</label>
+                                                            {!! QrCode::size(200)->generate(get_setting('no_koperasi')); !!}
+                                                        </div>
+                                                        <span wire:loading wire:target="event_bayar">
+                                                            <i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
+                                                            <span class="sr-only">{{ __('Loading...') }}</span>
+                                                        </span>
+                                                    </td>
                                                 </tr>
                                             @endif
-                                            @if($metode_pembayaran==5 and $anggota)
+                                            @if($metode_pembayaran==5)
                                                 <tr>
                                                     <th colspan="2" class="text-center">
                                                         <div wire:loading.remove wire:target="event_bayar">
@@ -207,6 +221,17 @@
                                                             <span class="sr-only">{{ __('Loading...') }}</span>
                                                         </span>
                                                     </th>
+                                                </tr>
+                                            @endif
+                                            @if($metode_pembayaran==7 or $metode_pembayaran==8)
+                                                <tr>
+                                                    <td colspan="2">
+                                                        <label> No Kartu / No Transaksi</label>
+                                                        <input type="text" class="form-control" wire:model="no_kartu_debit_kredit" />
+                                                        @error('no_kartu_debit_kredit')
+                                                            <span class="text-danger">{{ $message }}</span>
+                                                        @enderror
+                                                    </td>
                                                 </tr>
                                             @endif
                                         </table>

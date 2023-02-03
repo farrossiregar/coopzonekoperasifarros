@@ -3,11 +3,13 @@
         <div class="card">
             <div class="body">
                 <table class="table">
-                    <tr>
-                        <th style="border:0">Anggota</th>
-                        <td style="width:20px;border:0"> : </td>
-                        <td style="border:0">{{isset($data->anggota->no_anggota_platinum) ? $data->anggota->no_anggota_platinum .' / '. $data->anggota->name : ''}}</td>
-                    </tr>
+                    @if($data->jenis_transaksi==1)
+                        <tr>
+                            <th style="border:0">Anggota</th>
+                            <td style="width:20px;border:0"> : </td>
+                            <td style="border:0">{{isset($data->anggota->no_anggota_platinum) ? $data->anggota->no_anggota_platinum .' / '. $data->anggota->name : ''}}</td>
+                        </tr>
+                    @endif
                     <tr>
                         <th>No Transaksi</th>
                         <td style="width:20px"> : </td>
@@ -31,6 +33,22 @@
                         <td>{{date('d-M-Y',strtotime($data->created_at))}}</td>
                     </tr>
                     <tr>
+                        <th>Status Transaksi</th>
+                        <td style="width:20px"> : </td>
+                        <td>{!!status_transaksi($data->status)!!}</td>
+                    </tr>
+                    <tr>
+                        <th>Status Pembayaran</th>
+                        <td style="width:20px"> : </td>
+                        <td>
+                            @if($data->payment_date)
+                                <span class="badge badge-success">Lunas</span>
+                            @else
+                                <span class="badge badge-warning">Belum Lunas</span>
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
                         <th>Tanggal Pembayaran</th>
                         <td style="width:20px"> : </td>
                         <td>{{$data->payment_date ? date('d-M-Y',strtotime($data->payment_date)) : '-'}}</td>
@@ -38,12 +56,11 @@
                     <tr>
                         <th>Metode Pembayaran</th>
                         <td style="width:20px"> : </td>
-                        <td>{{$data->metode_pembayaran ? metode_pembayaran($data->metode_pembayaran) : '-'}}</td>
-                    </tr>
-                    <tr>
-                        <th>Status</th>
-                        <td style="width:20px"> : </td>
-                        <td>{!!status_transaksi($data->status)!!}</td>
+                        <td>{{$data->metode_pembayaran ? metode_pembayaran($data->metode_pembayaran) : '-'}}
+                            @if($data->metode_pembayaran==7 || $data->metode_pembayaran==8)
+                             ({{$data->no_kartu_debit_kredit}})
+                            @endif
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -79,6 +96,14 @@
                            @endforeach
                         </tbody>
                         <tfoot style="background: #eee;">
+                            <tr>
+                                <th colspan="5" class="text-right">Sub Total</th>
+                                <th class="text-right">{{format_idr($total - ($total * 0.11))}}</th>
+                            </tr>
+                            <tr>
+                                <th colspan="5" class="text-right">PPN</th>
+                                <th class="text-right">{{format_idr($total * 0.11)}}</th>
+                            </tr>
                             <tr>
                                 <th colspan="5" class="text-right">Total</th>
                                 <th class="text-right">{{format_idr($total)}}</th>

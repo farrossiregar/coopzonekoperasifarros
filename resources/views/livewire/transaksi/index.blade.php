@@ -3,10 +3,45 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="header row">
-                <div class="col-md-2">
+                <div class="col-2">
                     <input type="text" class="form-control" wire:model="keyword" placeholder="Pencarian" />
                 </div>
-                <div class="col-md-6">
+                <div class="col-1">
+                    <div class="pl-3 pt-2 form-group mb-0" x-data="{open_dropdown:false}" @click.away="open_dropdown = false">
+                        <a href="javascript:void(0)" x-on:click="open_dropdown = ! open_dropdown" class="dropdown-toggle">
+                            Filter <i class="fa fa-search-plus"></i>
+                        </a>
+                        <div class="dropdown-menu show-form-filter" x-show="open_dropdown">
+                            <form class="p-2">
+                                <div class="from-group my-2">
+                                    <input type="text" class="form-control" wire:model="filter_keyword" placeholder="Keyword" />
+                                </div>
+                                <div class="from-group my-2">
+                                    <select class="form-control" wire:model="filter_status_pembayaran">
+                                        <option value=""> -- Status Pembayaran -- </option>
+                                        <option value="1"> Lunas</option>
+                                        <option value="1"> Belum Lunas</option>
+                                    </select>
+                                </div>
+                                <div class="from-group my-2">
+                                    <select class="form-control" wire:model="filter_transaksi">
+                                        <option value=""> -- Status Transaksi -- </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <small>Tanggal Transaksi</small>
+                                    <input type="text" class="form-control tanggal_pengajuan" />
+                                </div>
+                                <div class="form-group">
+                                    <small>Tanggal Pembayaran</small>
+                                    <input type="text" class="form-control tanggal_pembayaran" />
+                                </div>
+                                <a href="javascript:void(0)" wire:click="clear_filter()"><small>Clear filter</small></a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-5">
                     <div class="btn-group" role="group">
                         <button id="btnGroupDrop1" type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Action</button>
                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
@@ -32,47 +67,59 @@
                                 <th>No Transaksi</th>
                                 <th class="text-center">Metode Pembayaran</th>
                                 <th>Tanggal Transaksi</th>
-                                <th>Tanggal Pembayaran</th>
+                                <th>Status Pembayaran</th>
+                                <th class="text-center">Tanggal Pembayaran</th>
                                 <th class="text-right">Nominal</th>
+                                <th class="text-right">PPN</th>
+                                <th class="text-right">Total</th>
                                 <th></th>
                            </tr>
                         </thead>
                         <tbody>
                             @php($number= $data->total() - (($data->currentPage() -1) * $data->perPage()) )
                             @foreach($data as $k => $item)
-                            <tr>
-                                <td style="width: 50px;">{{$number}}</td>
-                                <td>{!!status_transaksi($item->status)!!}</td>
-                                <td>
-                                    @if($item->jenis_transaksi==1)
-                                        <span class="badge badge-info">Anggota</span>
-                                    @endif
-                                    @if($item->jenis_transaksi==2)
-                                        <span class="badge badge-warning">Non Anggota</span>
-                                    @endif
-                                </td>
-                                <td><a href="{{route('transaksi.items',$item->id)}}">{{$item->no_transaksi}}</a></td>
-                                <td class="text-center">{{$item->metode_pembayaran ? metode_pembayaran($item->metode_pembayaran) : 'TUNAI'}}</td>
-                                <td>{{date('d-M-Y',strtotime($item->created_at))}}</td>
-                                <td>{{$item->payment_date ? date('d-M-Y',strtotime($item->payment_date)) : '-'}}</td>
-                                <td class="text-right">
-                                    @if($item->type_amount==0)
-                                        <span class="text-success" title="In"><i class="fa fa-arrow-down"></i></span>
-                                    @endif
-                                    @if($item->type_amount==1)
-                                        <span class="text-danger" title="Out"><i class="fa fa-arrow-up"></i></span>
-                                    @endif
-                                    {{format_idr($item->amount)}}
-                                </td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-navicon"></i></a>
-                                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                        </div>
-                                    </div>    
-                                </td>
-                            </tr>
-                            @php($number--)
+                                <tr>
+                                    <td style="width: 50px;">{{$number}}</td>
+                                    <td>{!!status_transaksi($item->status)!!}</td>
+                                    <td>
+                                        @if($item->jenis_transaksi==1)
+                                            <span class="badge badge-info">Anggota</span>
+                                        @endif
+                                        @if($item->jenis_transaksi==2)
+                                            <span class="badge badge-warning">Non Anggota</span>
+                                        @endif
+                                    </td>
+                                    <td><a href="{{route('transaksi.items',$item->id)}}">{{$item->no_transaksi}}</a></td>
+                                    <td class="text-center">{{$item->metode_pembayaran ? metode_pembayaran($item->metode_pembayaran) : 'TUNAI'}}</td>
+                                    <td>{{date('d-M-Y H:i',strtotime($item->created_at))}}</td>
+                                    <td>
+                                        @if($item->payment_date)
+                                            <span class="badge badge-success">Lunas</span>
+                                        @else
+                                            <span class="badge badge-warning">Belum Lunas</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-center">{{$item->payment_date ? date('d-M-Y',strtotime($item->payment_date)) : '-'}}</td>
+                                    <td class="text-right">
+                                        <!-- @if($item->type_amount==0)
+                                            <span class="text-success" title="In"><i class="fa fa-arrow-down"></i></span>
+                                        @endif
+                                        @if($item->type_amount==1)
+                                            <span class="text-danger" title="Out"><i class="fa fa-arrow-up"></i></span>
+                                        @endif -->
+                                        {{format_idr($item->amount - ($item->amount * 0.11))}}
+                                    </td>
+                                    <td class="text-right">{{format_idr($item->amount * 0.11)}}</td>
+                                    <td class="text-right">{{format_idr($item->amount)}}</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-navicon"></i></a>
+                                            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                            </div>
+                                        </div>    
+                                    </td>
+                                </tr>
+                                @php($number--)
                             @endforeach
                         </tbody>
                     </table>
