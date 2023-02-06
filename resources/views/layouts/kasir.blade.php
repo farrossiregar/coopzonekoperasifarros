@@ -57,7 +57,7 @@
                 </div>
                 <div class="navbar-right">
                     <form id="navbar-search" class="navbar-form search-form">
-                        @php($kasir = \App\Models\UserKasir::where(['user_id'=>\Auth::user()->id,'status'=>0])->first())
+                        @php($kasir = \App\Models\UserKasir::whereDate('created_at',date('Y-m-d'))->where(['user_id'=>\Auth::user()->id,'status'=>0])->first())
                         <div id="navbar-menu float-left">
                             <ul class="nav navbar-nav">
                                 <li class="pr-5">
