@@ -5,8 +5,13 @@
             <div class="body">
                 <div class="row mb-4">
                     <div class="col-md-4">
-                        <label>KODE PRODUKSI / BARCODE (Q)</label>
-                        <input type="text" class="form-control" id="barcode" wire:model="kode_produksi" wire:keydown.enter="getProduct" placeholder="BARCODE" />
+                        <div wire:ignore>
+                            <label>KODE PRODUKSI / BARCODE (Q)</label>
+                            <!-- <input type="text" class="form-control" id="barcode" wire:model="kode_produksi" wire:keydown.enter="getProduct" placeholder="BARCODE" /> -->
+                            <select class="form-control" id="barcode">
+                                <option value=""> -- BARCODE -- </option>
+                            </select>
+                        </div>
                         @error('kode_produksi') <h6 class="text-danger">{{ $message }}</h6> @enderror
                         @if($msg_error) <h6 class="text-danger">{{ $msg_error }}</h6> @endif
                     </div>
@@ -23,7 +28,7 @@
                     </div>
                 </div>
                 <div class="table-responsive">
-                    <table class="table center-aligned-table table-bordered">
+                    <table class="table center-aligned-table table-bordered" id="table_product">
                         <thead>
                             <tr style="background:#16a3b8;color:white;">
                                 <th class="text-center">NO</th>
@@ -42,20 +47,22 @@
                             </tr>
                         @endif
                         @php($num=1)
-                        @foreach($data as $k => $item)
-                            <tr>
-                                <td class="text-center">{{$num}}@php($num++)</td>
-                                <td>{{$item['kode_produksi']}}</td>
-                                <td>{{$item['keterangan']}}</td>
-                                <td class="text-right">{{format_idr($item['harga_jual'])}}</td>
-                                <td class="text-center">{{$item['qty']}}</td>
-                                <td class="text-center">{{$item['stock']}}</td>
-                                <td class="text-right">{{format_idr($item['harga_jual'] * $item['qty']);}}</td>
-                                <td class="text-center">
-                                    <a href="javascript:void(0)" class="btn btn-danger" wire:click="delete({{$k}})" title="Hapus"><i class="fa fa-close"></i></a>
-                                </td>
-                            </tr>
-                        @endforeach
+                        <tbody>
+                            @foreach($data as $k => $item)
+                                <tr tabindex="0">
+                                    <td class="text-center" onkeypress="alert(0)">{{$num}}@php($num++)</td>
+                                    <td>{{$item['kode_produksi']}}</td>
+                                    <td>{{$item['keterangan']}}</td>
+                                    <td class="text-right">{{format_idr($item['harga_jual'])}}</td>
+                                    <td class="text-center">{{$item['qty']}}</td>
+                                    <td class="text-center">{{$item['stock']}}</td>
+                                    <td class="text-right">{{format_idr($item['harga_jual'] * $item['qty']);}}</td>
+                                    <td class="text-center">
+                                        <a href="javascript:void(0)" class="btn btn-danger" wire:click="delete({{$k}})" title="Hapus"><i class="fa fa-close"></i></a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -132,6 +139,10 @@
         </div>
     </div>
     <style>
+        #table_product tr td:focus{
+            background: red;
+            color: red;
+        }
         .table_total tr td {
             font-size:16px;
         }
@@ -262,14 +273,19 @@
         </div>
     </div>
 
-    <div wire:ignore.self class="modal fade" id="modal_input_anggota" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="modal_input_anggota" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <form wire:submit.prevent="setAnggota">
                     <div class="modal-body">
                         <div class="form-group">
-                            <label>NOMOR ANGGOTA (T)</label>
-                            <input type="number" class="form-control" id="no_anggota" wire:model="no_anggota"  wire:keydown.enter="setAnggota" placeholder="NOMOR ANGGOTA" />
+                            <label>ANGGOTA (T)</label>
+                            <div wire:ignore>
+                                <select class="form-control" id="anggota">
+                                    <option value=""> -- ANGGOTA -- </option>
+                                </select>
+                            </div>
+                            <!-- <input type="number" class="form-control" id="no_anggota" wire:model="no_anggota"  wire:keydown.enter="setAnggota" placeholder="NOMOR ANGGOTA" /> -->
                             @error('no_anggota')
                                 <ul class="parsley-errors-list filled" id="parsley-id-29"><li class="parsley-required">{{ $message }}</li></ul>
                             @enderror
@@ -332,38 +348,115 @@
     </div>
     
     @push('after-scripts')
+        <link rel="stylesheet" href="{{ asset('assets/vendor/select2/css/select2.min.css') }}"/>
+        <script src="{{ asset('assets/vendor/select2/js/select2.min.js') }}"></script>
+        <style>
+            .select2-container .select2-selection--single {height:36px;padding-left:10px;}
+            .select2-container .select2-selection--single .select2-selection__rendered{padding-top:1px;}
+            .select2-container--default .select2-selection--single .select2-selection__arrow{top:4px;right:10px;}
+            .select2-container {width: 100% !important;}
+        </style>
+        <script>
+            var select_barcode = $('#barcode').select2({
+                    placeholder: " -- BARCODE -- ",
+                    ajax: {
+                        dataType: 'json',
+                        url: '{{route('api.product.data')}}',
+                        data: function (params) {
+                            var query = {
+                                search: params.term
+                            }
+                            return query;
+                        },
+                        processResults: function (data) {
+                            console.log(data);
+                            return {
+                                results: data.items
+                            };
+                        }
+                    }
+                }
+            );
+
+            $('#barcode').on('change', function (e) {
+                var data = $(this).select2("val");
+                @this.set('kode_produksi', data);
+                Livewire.emit('getProduct');
+            });
+
+            Livewire.on('clear-barcode',()=>{
+                $('#barcode').val("").trigger('change');
+            });
+
+            var select_anggota = $('#anggota').select2({
+                    placeholder: " -- ANGGOTA -- ",
+                    ajax: {
+                        dataType: 'json',
+                        url: '{{route('api.anggota.data')}}',
+                        data: function (params) {
+                            var query = {
+                                search: params.term
+                            }
+                            return query;
+                        },
+                        processResults: function (data) {
+                            return {
+                                results: data.items
+                            };
+                        }
+                    }
+                }
+            );
+            $('#anggota').on('change', function (e) {
+                var data = $(this).select2("val");
+                @this.set('no_anggota', data);
+                Livewire.emit('setAnggota');
+            });
+            
+        </script>
         <script src="{{ asset('assets/js/jquery.priceformat.min.js') }}"></script>
         <script>
-            document.onkeyup = function(e) {
+
+            document.addEventListener("keydown", onKeyPressed);
+            
+            function onKeyPressed(e) {
+                if(e.which==13){
+                    console.log(document.activeElement);
+                }
                 console.log(e.which);
-                if(e.which==81){ // Q
-                    $("#barcode").focus();
+                if(e.altKey){
+                    if(e.which==81){ // Q
+                        $("#barcode").focus();
+                    }
+                    if(e.which==87){ // W
+                        $("#qty").focus();
+                    }
+                    if(e.which==69){ // E
+                        $("#btnGetProduct").trigger('click');
+                    }
+                    if(e.which==80){ // P
+                        $("#btn_input_anggota").trigger('click');
+                    }
+                    if(e.which==84){ // T
+                        $("#no_anggota").focus();
+                    }
+                    if(e.which==89){ // T
+                        $("#btn_find_anggota").trigger('click');
+                    }
+                    if(e.which==85){ // U
+                        Livewire.emit('okeAnggota');
+                    }
+                    if(e.which==73){ // I
+                        Livewire.emit('deleteAnggota');
+                    }
+                    if(e.which==65){ // A
+                        $('#btn_bayar').trigger('click');
+                    }
                 }
-                if(e.which==87){ // W
-                    $("#qty").focus();
-                }
-                if(e.which==69){ // E
-                    $("#btnGetProduct").trigger('click');
-                }
-                if(e.which==80){ // P
-                    $("#btn_input_anggota").trigger('click');
-                }
-                if(e.which==84){ // T
-                    $("#no_anggota").focus();
-                }
-                if(e.which==89){ // T
-                    $("#btn_find_anggota").trigger('click');
-                }
-                if(e.which==85){ // U
-                    Livewire.emit('okeAnggota');
-                }
-                if(e.which==73){ // I
-                    Livewire.emit('deleteAnggota');
-                }
-                if(e.which==65){ // A
-                    $('#btn_bayar').trigger('click');
-                }
-            };
+                
+                //console.log('Key Code: ' + keyCode + ' Key: ' + key);
+            }
+           
 
             $('.format_price').priceFormat({
                 prefix: '',

@@ -11,7 +11,7 @@
                     <p class="lead">{{__('Login to your account')}}</p>
                 </div>
                 <div class="body">
-                    <form class="form-auth-small" method="POST" wire:submit.prevent="login" action="">
+                    <form class="form-auth-small" id="form-login" method="POST" wire:submit.prevent="login" action="">
                         @if($message)
                         <p class="text-danger">{{$message}}</p>
                         @endif
@@ -38,7 +38,7 @@
                         <div wire:ignore>
                             <div class="g-recaptcha" data-callback="verifyCallback" data-sitekey="{{env('CAPTCHA_SITE_KEY')}}"></div>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-lg btn-block mt-1"><i class="fa fa-sign-in mr-2"></i>{{ __('LOGIN') }}</button>
+                        <button wire:loading.remove wire:target="login" type="submit" id="btn_submit" class="btn btn-primary btn-lg btn-block mt-1"><i class="fa fa-sign-in mr-2"></i>{{ __('LOGIN') }}</button>
                     </form>
                 </div>
             </div>
@@ -51,6 +51,7 @@
     <script>
         var verifyCallback = function(response) {
             @this.set('token', response);
+            $("#btn_submit").trigger('click');
         };
     </script>
 </div>

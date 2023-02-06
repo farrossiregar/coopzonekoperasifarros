@@ -17,7 +17,8 @@ class Index extends Component
     public $user_kasir,$msg_error_anggota,$url_cetak_struk;
     protected $listeners = ['event_bayar' => 'event_bayar',
                             'okeAnggota'=>'okeAnggota',
-                            'deleteAnggota'=>'deleteAnggota'];
+                            'deleteAnggota'=>'deleteAnggota',
+                            'getProduct'=>'getProduct'];
     public function render()
     {
         return view('livewire.kasir.index')->layout('layouts.kasir');
@@ -189,6 +190,10 @@ class Index extends Component
         if($this->qty=="" || $this->qty==0) $this->qty = 1;
 
         if($product){
+            if($product->harga_jual=="" || $product->harga_jual==0){
+                $this->msg_error = "Harga produk masih kosong.";
+                return;
+            }
             if(isset($this->data[$product->id])){
                 $this->data[$product->id]['qty'] += $this->qty;
                 TransaksiItem::where(['product_id'=>$product->id,'transaksi_id'=>$this->transaksi->id])->update(['qty'=>$this->data[$product->id]['qty'],'total'=>$this->data[$product->id]['qty']*$this->data[$product->id]['harga_jual']]);
@@ -225,6 +230,7 @@ class Index extends Component
         $this->transaksi->amount = $this->total_and_ppn;
         $this->transaksi->save();
         $this->reset('kode_produksi');
+        $this->emit('clear-barcode');
     }
 
     public function delete($k)

@@ -33,22 +33,22 @@ Route::group(['middleware' => 'cors', 'json.response'], function(){
 		]));
 	});
 
-	Route::post('get-anggota',function(Request $r){
+	// Route::post('get-anggota',function(Request $r){
 
-		if($r->sign!=env('COOPZONE_TOKEN')) return ['code'=>200,'message'=>'access denied'];
+	// 	if($r->sign!=env('COOPZONE_TOKEN')) return ['code'=>200,'message'=>'access denied'];
 
-		$data = [];
-		foreach(\App\Models\UserMember::get() as $k => $item){
-			$data[$k]['no_anggota'] = $item->no_anggota_platinum;
-			$data[$k]['nama'] = $item->name;
-			$data[$k]['simpanan_pokok'] = $item->simpanan_pokok;
-			$data[$k]['simpanan_wajib'] = $item->simpanan_wajib;
-			$data[$k]['simpanan_sukarela'] = $item->simpanan_sukarela;
-			$data[$k]['simpanan_lain_lain'] = $item->simpanan_lain_lain;
-		}
+	// 	$data = [];
+	// 	foreach(\App\Models\UserMember::get() as $k => $item){
+	// 		$data[$k]['no_anggota'] = $item->no_anggota_platinum;
+	// 		$data[$k]['nama'] = $item->name;
+	// 		$data[$k]['simpanan_pokok'] = $item->simpanan_pokok;
+	// 		$data[$k]['simpanan_wajib'] = $item->simpanan_wajib;
+	// 		$data[$k]['simpanan_sukarela'] = $item->simpanan_sukarela;
+	// 		$data[$k]['simpanan_lain_lain'] = $item->simpanan_lain_lain;
+	// 	}
 
-		return $data;
-	});
+	// 	return $data;
+	// });
 
 	// Integrasi Coopzone
 	Route::post('transaction-store-pulsa',[\App\Http\Controllers\Api\TransactionController::class,'storePulsa']);
@@ -56,6 +56,9 @@ Route::group(['middleware' => 'cors', 'json.response'], function(){
 	Route::post('transaction/submit-qrcode',[\App\Http\Controllers\Api\TransactionController::class,'submitQrcode']);
 	Route::post('pembiayaan-store',[\App\Http\Controllers\Api\PinjamanController::class,'store']);
 	Route::post('product/update',[\App\Http\Controllers\Api\ProductController::class,'update']);
+
+	Route::get('get-product',[\App\Http\Controllers\Api\ProductController::class,'data'])->name('api.product.data');
+	Route::get('get-anggota',[\App\Http\Controllers\Api\UserMemberController::class,'data'])->name('api.anggota.data');
 });
 
 Route::group(['middleware' => 'auth:api'], function(){
@@ -78,4 +81,5 @@ Route::group(['middleware' => 'auth:api'], function(){
 	Route::post('simpanan/store',[\App\Http\Controllers\Api\SimpananController::class,'store'])->name('simpanan.store');
 	Route::get('notification/data',[\App\Http\Controllers\Api\NotificationController::class,'data'])->name('notification.data');
 	Route::get('get-bank',[\App\Http\Controllers\Api\BankController::class,'data'])->name('notification.data');
+
 });
