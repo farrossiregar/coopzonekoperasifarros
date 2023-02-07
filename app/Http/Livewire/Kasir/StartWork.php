@@ -26,6 +26,6 @@ class StartWork extends Component
         $data->status = 0;
         $data->save();
 
-        $this->emit('close-modal-start-work');
+        return redirect()->route('kasir.index');
     }
 }
