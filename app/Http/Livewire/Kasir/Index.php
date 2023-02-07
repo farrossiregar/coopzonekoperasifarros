@@ -41,7 +41,7 @@ class Index extends Component
             }
         }
 
-        $this->ppn = $this->total*0.11;
+        $this->ppn = 0;//$this->total*0.11;
         $this->total_and_ppn = $this->total + $this->ppn;
     }
 
