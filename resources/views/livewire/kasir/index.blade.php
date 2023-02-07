@@ -172,17 +172,20 @@
                                                 </td>
                                                 <td class="text-right text-success">
                                                     <h5 style="font-size:20px;">Rp. {{format_idr($total_and_ppn)}}</h5>
+                                                    
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td colspan="2"><hr /></td>
+                                                <td colspan="2">
+                                                    @if($message_metode_pembayaran)
+                                                        <div class="alert alert-danger" role="alert">{{$message_metode_pembayaran}}</div> 
+                                                    @endif    
+                                                    <hr />
+                                                </td>
                                             </tr>
                                             @if($metode_pembayaran==4)
                                                 <tr>
                                                     <td colspan="2">
-                                                        @if($message_metode_pembayaran)
-                                                            <div class="alert alert-danger" role="alert">{{$message_metode_pembayaran}}</div> 
-                                                        @endif
                                                         <div class="mt-2"> 
                                                             <strong>UANG TUNAI</strong>
                                                             <input type="text" class="form-control text-right format_price" wire:model="uang_tunai" style="font-size:20px;" />
@@ -461,8 +464,6 @@
                         $('#btn_bayar').trigger('click');
                     }
                 }
-                
-                //console.log('Key Code: ' + keyCode + ' Key: ' + key);
             }
            
 
