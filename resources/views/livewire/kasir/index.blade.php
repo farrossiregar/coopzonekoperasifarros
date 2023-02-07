@@ -104,10 +104,6 @@
                             <th>QTY</th>
                             <td class="text-right">{{format_idr($total_qty)}}</td>
                         </tr>
-                        <!-- <tr>
-                            <th>PPN</th>
-                            <td class="text-right">Rp. {{format_idr($ppn)}}</td>
-                        </tr> -->
                         <tr>
                             <th>TOTAL</th>
                             <td class="text-right">Rp. {{format_idr($total_and_ppn)}}</td>
