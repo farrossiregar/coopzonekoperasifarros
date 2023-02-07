@@ -13,7 +13,7 @@ class Index extends Component
     public $keyword;
     public function render()
     {
-        $data = Product::orderBy('id','DESC');
+        $data = Product::orderBy('id','DESC')->where('type','Stock');
 
         if($this->keyword){
             $data->where('keterangan','LIKE',"%{$this->keyword}%")

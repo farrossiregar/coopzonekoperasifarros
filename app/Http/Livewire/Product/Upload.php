@@ -33,21 +33,22 @@ class Upload extends Component
             $countLimit = 1;
             foreach($sheetData as $key => $i){
                 if($key<=1) continue; // skip header
-            
+                
                 $kategori = $i[1];
                 $barcode = $i[2];
                 $produk = $i[3];
-                $price = $i[4];
+                $qty = $i[4];
                 $uom = $i[5];
-                $qty = $i[6];
+                $price = $i[6];
 
-                $product = Product::where('kode_produksi',$barcode)->first();
+                $product = Product::where('keterangan',$produk)->first();
                 if(!$product){
                     $product = new Product();
                     $product->is_migrate = 1;
+                    $product->item_code = $barcode;
+                    // $product->kode_produksi = $barcode;
                 }
 
-                $product->kode_produksi = $barcode;
                 if($kategori=='KONSINYASI'){
                     $product->type ='Konsinyasi';
                 }else{
