@@ -99,6 +99,10 @@ class Index extends Component
 
         // 3 Bayar Nanti
         if($this->metode_pembayaran==3){
+            if(!isset($this->anggota->id)){
+                $this->message_metode_pembayaran = "Anggota harus diisi terlebih dahulu";
+                return;
+            }
             $sisa = $this->anggota->plafond - $this->anggota->plafond_digunakan;
             //cek kuota
             if($sisa<$this->total_and_ppn){
@@ -118,6 +122,10 @@ class Index extends Component
         }
 
         if($this->metode_pembayaran==5){
+            if(!isset($this->anggota->id)){
+                $this->message_metode_pembayaran = "Anggota harus diisi terlebih dahulu";
+                return;
+            }
             if($this->anggota->simpanan_ku<$this->total_and_ppn){
                 $this->message_metode_pembayaran = "Saldo COOPAY tidak mencukupi untuk melakukan transaksi";   
                 return;
