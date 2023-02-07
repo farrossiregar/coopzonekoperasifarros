@@ -185,6 +185,7 @@ class Index extends Component
     public function getProduct($kode_produksi=null)
     {
         if($kode_produksi) $this->kode_produksi = $kode_produksi;
+        
         if($this->kode_produksi=="") return;
         $this->validate([
             'kode_produksi' => 'required'
