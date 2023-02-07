@@ -176,6 +176,7 @@ class Index extends Component
 
     public function getProduct()
     {
+        if($this->kode_produksi=="") return;
         $this->validate([
             'kode_produksi' => 'required'
         ]);
