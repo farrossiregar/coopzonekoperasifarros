@@ -14,7 +14,7 @@ class Index extends Component
     public $data=[],$kode_produksi,$qty=1,$sub_total=0,$total=0,$msg_error="",$metode_pembayaran=4,$success=false;
     public $no_transaksi='',$transaksi,$jenis_transaksi=2,$msg_error_jenis_transaksi,$no_anggota,$anggota,$temp_anggota;
     public $status_transaksi=0,$uang_tunai=0,$total_kembali=0,$total_qty=0,$message_metode_pembayaran,$ppn,$total_and_ppn,$no_kartu_debit_kredit;
-    public $user_kasir,$msg_error_anggota,$url_cetak_struk;
+    public $user_kasir,$msg_error_anggota,$url_cetak_struk,$data_product=[],$data_anggota=[];
     protected $listeners = ['event_bayar' => 'event_bayar',
                             'okeAnggota'=>'okeAnggota',
                             'deleteAnggota'=>'deleteAnggota',
@@ -29,6 +29,15 @@ class Index extends Component
         $this->user_kasir = UserKasir::where(['user_id'=>\Auth::user()->id,'status'=>0])->whereDate('start_work_date',date('Y-m-d'))->first();
         if(!$this->user_kasir){
             $this->emit('show-start-work');
+        }
+        
+        foreach(Product::get() as $k => $item){
+            $this->data_product[$k]['id'] = $item->kode_produksi;
+            $this->data_product[$k]['text'] = $item->kode_produksi .'/'. $item->keterangan;
+        }
+        foreach(UserMember::get() as $k => $item){
+            $this->data_anggota[$k]['id'] = $item->no_anggota_platinum;
+            $this->data_anggota[$k]['text'] = $item->no_anggota_platinum .'/'. $item->name;
         }
     }
 
@@ -185,6 +194,7 @@ class Index extends Component
     public function getProduct($kode_produksi=null)
     {
         if($kode_produksi) $this->kode_produksi = $kode_produksi;
+        
         if($this->kode_produksi=="") return;
         $this->validate([
             'kode_produksi' => 'required'
