@@ -379,8 +379,8 @@
 
             $('#barcode').on('change', function (e) {
                 var data = $(this).select2("val");
-                @this.set('kode_produksi', data);
-                Livewire.emit('getProduct');
+                // @this.set('kode_produksi', data);
+                Livewire.emit('getProduct',data);
             });
 
             Livewire.on('clear-barcode',()=>{
