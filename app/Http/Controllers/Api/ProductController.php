@@ -48,7 +48,8 @@ class ProductController extends Controller
         $data = Product::orderBy('keterangan','ASC');
 
         if($keyword) $data->where(function($table) use($keyword){
-                            $table->where('kode_produksi','LIKE',"%{$keyword}%")->orWhere('keterangan','LIKE',"%{$keyword}%");
+                            $table->where('kode_produksi','LIKE',"%{$keyword}%")
+                            ->orWhere('keterangan','LIKE',"%{$keyword}%");
                         });
         $items = [];
         foreach($data->paginate(10) as $k => $item){
