@@ -4,9 +4,9 @@
         <div class="card">
             <div class="body">
                 <div class="row mb-4">
-                    <div class="col-md-4">
+                    <div class="col-md-5">
                         <div wire:ignore>
-                            <label>KODE PRODUKSI / BARCODE (Q)</label>
+                            <label>KODE PRODUKSI / BARCODE <code>(ALT+Q)</code></label>
                             <!-- <input type="text" class="form-control" id="barcode" wire:model="kode_produksi" wire:keydown.enter="getProduct" placeholder="BARCODE" /> -->
                             <select class="form-control" id="barcode">
                                 <option value=""> -- BARCODE -- </option>
@@ -15,16 +15,16 @@
                         @error('kode_produksi') <h6 class="text-danger">{{ $message }}</h6> @enderror
                         @if($msg_error) <h6 class="text-danger">{{ $msg_error }}</h6> @endif
                     </div>
-                    <div class="col-md-1 px-0">
-                        <label>QTY (W)</label>
+                    <div class="col-md-2 px-0">
+                        <label>QTY <code>(ALT+W)</code></label>
                         <input type="number" class="form-control" id="qty" wire:keydown.enter="getProduct" wire:model="qty" />
                     </div>
-                    <div class="col-4 pt-4">
+                    <div class="col-2 pt-4">
                         <span wire:loading wire:target="getProduct">
                             <i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
                             <span class="sr-only">{{ __('Loading...') }}</span>
                         </span>
-                        <button type="button" wire:loading.remove wire:click="getProduct" id="btnGetProduct" wire:target="getProduct" class="btn btn-info btn-lg"><i class="fa fa-plus"></i> TAMBAH (E)</button>
+                        <button type="button" wire:loading.remove wire:click="getProduct" id="btnGetProduct" wire:target="getProduct" class="btn btn-info btn-lg"><i class="fa fa-plus"></i> TAMBAH <code>(ALT+E)</code></button>
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -111,9 +111,9 @@
                     </table>
                     <button type="button" data-toggle="modal" data-target="#modal_input_anggota" id="btn_input_anggota" class="btn btn-warning btn-lg col-12 mb-2"><i class="fa fa-user"></i> 
                         @if($anggota)
-                            {{$anggota->no_anggota_platinum}} / {{$anggota->name}} (P)
+                            {{$anggota->no_anggota_platinum}} / {{$anggota->name}} <code>(ALT+P)</code>
                         @else
-                            <span>INPUT NO ANGGOTA (P)</span>
+                            <span>INPUT NO ANGGOTA <code>(ALT+P)</code></span>
                         @endif
                     </button>
                     @if($status_transaksi==1)
@@ -123,10 +123,10 @@
                                 <span class="sr-only">{{ __('Loading...') }}</span>
                             </span>
                             <div class="col-7 pr-0">
-                                <a href="javascript:voi(0)" data-toggle="modal" data-target="#modal_pembayaran" id="btn_bayar" wire:loading.remove wire:target="bayar,cancel_transaction" class="btn btn-info btn-lg col-12" style=""><i class="fa fa-check-circle"></i> <span>BAYAR (A)</span></a>
+                                <a href="javascript:voi(0)" data-toggle="modal" data-target="#modal_pembayaran" id="btn_bayar" wire:loading.remove wire:target="bayar,cancel_transaction" class="btn btn-info btn-lg col-12" style=""><i class="fa fa-check-circle"></i> <span>BAYAR <code>(ALT+A)</code></span></a>
                             </div>
                             <div class="col-5 pr-0">
-                                <a href="javascript:void(0)" wire:click="cancel_transaction" wire:loading.remove wire:target="bayar,cancel_transaction" class="btn btn-danger btn-lg col-12" id="btn_batalkan"><i class="fa fa-close"></i> BATAL (S)</a>
+                                <a href="javascript:void(0)" wire:click="cancel_transaction" wire:loading.remove wire:target="bayar,cancel_transaction" class="btn btn-danger btn-lg col-12" id="btn_batalkan"><i class="fa fa-close"></i> BATAL <code>(ALT+S)</code></a>
                             </div>
                         </div>
                     @endif
@@ -408,7 +408,19 @@
                 @this.set('no_anggota', data);
                 Livewire.emit('setAnggota');
             });
-            
+
+
+            // on first focus (bubbles up to document), open the menu
+            $(document).on('focus', '.select2-selection.select2-selection--single', function (e) {
+                $(this).closest(".select2-container").siblings('select:enabled').select2('open');
+            });
+
+            // steal focus during close - only capture once and stop propogation
+            $('select.select2').on('select2:closing', function (e) {
+                $(e.target).data("select2").$selection.one('focus focusin', function (e) {
+                    e.stopPropagation();
+                }); 
+            });
         </script>
         <script src="{{ asset('assets/js/jquery.priceformat.min.js') }}"></script>
         <script>
@@ -422,7 +434,7 @@
                 console.log(e.which);
                 if(e.altKey){
                     if(e.which==81){ // Q
-                        $("#barcode").focus();
+                        $("#barcode").select2('open');
                     }
                     if(e.which==87){ // W
                         $("#qty").focus();
