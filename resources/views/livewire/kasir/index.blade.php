@@ -408,8 +408,8 @@
             );
             $('#anggota').on('change', function (e) {
                 var data = $(this).select2("val");
-                @this.set('no_anggota', data);
-                Livewire.emit('setAnggota');
+                // @this.set('no_anggota', data);
+                Livewire.emit('setAnggota',data);
             });
 
 
