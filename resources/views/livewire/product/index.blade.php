@@ -53,7 +53,9 @@
                                 <td><a href="{{route('product.detail',$item->id)}}">{{$item->keterangan}}</a></td>
                                 <td>@livewire('product.editable',['field'=>'product_uom_id','data'=>(isset($item->uom->name) ? $item->uom->name : ''),'id'=>$item->id],key('uom'.$item->id))</td>
                                 <td>@livewire('product.editable',['field'=>'qty','data'=>$item->qty,'id'=>$item->id],key('qty'.$item->id))</td>
-                                <td class="text-right">{{format_idr($item->harga_jual)}}</td>
+                                <td class="text-right">
+                                    @livewire('product.editable',['field'=>'harga_jual','data'=>$item->harga_jual,'id'=>$item->id],key('harga_jual'.$item->id))
+                                </td>                                
                                 <td></td>
                             </tr>
                             @php($number--)

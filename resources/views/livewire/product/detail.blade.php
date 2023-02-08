@@ -25,6 +25,11 @@
                             <tr>
                                 <th>Harga Jual</th>
                                 <td> : </td>
+                                <td>@livewire('product.editable',['field'=>'harga_jual','data'=>$data->harga_jual,'id'=>$data->id],key('harga_jual'.$data->id))</td>
+                            </tr>
+                            <!-- <tr>
+                                <th>Harga Jual</th>
+                                <td> : </td>
                                 <td>Rp. {{format_idr($data->harga_jual)}}</td>
                             </tr>
                             <tr>
@@ -36,7 +41,7 @@
                                 <th>Harga Jual</th>
                                 <td> : </td>
                                 <td>Rp. {{format_idr($data->harga_jual+$data->ppn)}}</td>
-                            </tr>
+                            </tr> -->
                         </table>
                     </div>
                     <div class="col-3">
