@@ -41,6 +41,7 @@ class Login extends Component
         $response = $response->json();
         
         if (!$response['success']) {
+            $this->emit('reload-captcha');
             $this->message = 'Google thinks you are a bot, please refresh and try again';
         }else{
             if (Auth::attempt($credentials,$this->remember_me)) {

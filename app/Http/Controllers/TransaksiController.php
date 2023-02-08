@@ -12,7 +12,7 @@ class TransaksiController extends Controller
     {   
         $pdf = \App::make('dompdf.wrapper');
         
-        QrCode::format('png')->size(400)->generate('https://play.google.com/store/apps/details?id=com.stalavista.coopzone_application', '../public/'.$data->id.'.png');
+        QrCode::format('png')->size(400)->generate('https://play.google.com/store/apps/details?id=com.stalavista.coopzone_application', '../public/qrcode/'.$data->id.'.png');
 
         $pdf->loadView('livewire.transaksi.cetak-struk',['data'=>$data]);
 

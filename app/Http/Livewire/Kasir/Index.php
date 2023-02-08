@@ -163,7 +163,12 @@ class Index extends Component
             ]);
         }
 
-        if($this->anggota) $this->transaksi->user_member_id = $this->anggota->id;
+        if($this->anggota) {
+            $this->transaksi->user_member_id = $this->anggota->id;
+            $this->transaksi->jenis_transaksi = 1;
+        }else{
+            $this->transaksi->jenis_transaksi = 2;
+        }
         
         // kurangin stock
         foreach($this->transaksi->items as $item){
