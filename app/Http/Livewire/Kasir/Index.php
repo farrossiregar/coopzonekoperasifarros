@@ -18,7 +18,8 @@ class Index extends Component
     protected $listeners = ['event_bayar' => 'event_bayar',
                             'okeAnggota'=>'okeAnggota',
                             'deleteAnggota'=>'deleteAnggota',
-                            'getProduct'=>'getProduct'];
+                            'getProduct'=>'getProduct',
+                            'setAnggota'=>'setAnggota'];
     public function render()
     {
         return view('livewire.kasir.index')->layout('layouts.kasir');
@@ -59,8 +60,9 @@ class Index extends Component
         $this->reset('anggota','no_anggota','temp_anggota');
     }
 
-    public function setAnggota()
+    public function setAnggota($no_anggota='')
     {
+        if($no_anggota) $this->no_anggota = $no_anggota;
         $this->validate([
             'no_anggota'=>'required'
         ]);
