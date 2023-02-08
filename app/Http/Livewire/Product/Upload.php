@@ -18,7 +18,7 @@ class Upload extends Component
 
     public function save()
     {
-        set_time_limit(50000); // 
+        ini_set('memory_limit', '-1');
         $this->validate([
             'file'=>'required|mimes:xls,xlsx|max:51200' // 50MB maksimal
         ]);
@@ -45,10 +45,9 @@ class Upload extends Component
                 if(!$product){
                     $product = new Product();
                     $product->is_migrate = 1;
-                    $product->item_code = $barcode;
-                    // $product->kode_produksi = $barcode;
                 }
-
+                $product->item_code = $barcode;
+                
                 if($kategori=='KONSINYASI'){
                     $product->type ='Konsinyasi';
                 }else{
