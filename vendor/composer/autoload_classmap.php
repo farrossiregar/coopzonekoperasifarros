@@ -15,6 +15,7 @@ return array(
     'App\\Console\\Commands\\CekDouble' => $baseDir . '/app/Console/Commands/CekDouble.php',
     'App\\Console\\Commands\\SantamariAsuransiCheckExpired' => $baseDir . '/app/Console/Commands/SantamariAsuransiCheckExpired.php',
     'App\\Console\\Commands\\SyncProduct' => $baseDir . '/app/Console/Commands/SyncProduct.php',
+    'App\\Console\\Commands\\SyncProductByExcel' => $baseDir . '/app/Console/Commands/SyncProductByExcel.php',
     'App\\Console\\Commands\\generateNik' => $baseDir . '/app/Console/Commands/generateNik.php',
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\Events\\KasirEvent' => $baseDir . '/app/Events/KasirEvent.php',

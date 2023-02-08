@@ -209,7 +209,7 @@
                                                 <tr>
                                                     <td colspan="2" class="text-center">
                                                         <div wire:loading.remove wire:target="event_bayar">
-                                                            <label>Gunakan Aplikasi Coopay dan Scan disini</label>
+                                                            <label>Gunakan Aplikasi CoopZone dan Scan disini</label>
                                                             {!! QrCode::size(200)->generate(get_setting('no_koperasi')); !!}
                                                         </div>
                                                         <span wire:loading wire:target="event_bayar">
@@ -223,7 +223,7 @@
                                                 <tr>
                                                     <th colspan="2" class="text-center">
                                                         <div wire:loading.remove wire:target="event_bayar">
-                                                            <label>Gunakan Aplikasi Coopay dan Scan disini</label>
+                                                            <label>Gunakan Aplikasi CoopZone dan Scan disini</label>
                                                             {!! QrCode::size(200)->generate(get_setting('no_koperasi')); !!}
                                                         </div>
                                                         <span wire:loading wire:target="event_bayar">

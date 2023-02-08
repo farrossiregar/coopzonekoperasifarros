@@ -751,6 +751,7 @@ class ComposerStaticInit8eb009ed5d020576fc59907df4023d0b
         'App\\Console\\Commands\\CekDouble' => __DIR__ . '/../..' . '/app/Console/Commands/CekDouble.php',
         'App\\Console\\Commands\\SantamariAsuransiCheckExpired' => __DIR__ . '/../..' . '/app/Console/Commands/SantamariAsuransiCheckExpired.php',
         'App\\Console\\Commands\\SyncProduct' => __DIR__ . '/../..' . '/app/Console/Commands/SyncProduct.php',
+        'App\\Console\\Commands\\SyncProductByExcel' => __DIR__ . '/../..' . '/app/Console/Commands/SyncProductByExcel.php',
         'App\\Console\\Commands\\generateNik' => __DIR__ . '/../..' . '/app/Console/Commands/generateNik.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Events\\KasirEvent' => __DIR__ . '/../..' . '/app/Events/KasirEvent.php',

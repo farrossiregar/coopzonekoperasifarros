@@ -1,16 +1,18 @@
 @section('title', $data->kode_produksi .' / '.$data->keterangan)
 @section('parentPageTitle', 'Produk')
 <div class="row clearfix">
-    <div class="col-md-12 px-0 mx-0">
+    <div class="col-md-6 px-0 mx-0">
         <div class="card mb-2">
             <div class="body">
+                <h6>Detail Produk</h6>
+                <hr />
                 <div class="row">
-                    <div class="col-3">
+                    <div class="col-md-6">
                         <table class="table">
                             <tr>
-                                <th>Kode Produksi</th>
-                                <td> : </td>
-                                <td>{{$data->kode_produksi}}</td>
+                                <th style="border:0">Kode Produksi</th>
+                                <td style="border:0"> : </td>
+                                <td style="border:0">{{$data->kode_produksi}}</td>
                             </tr>
                             <tr>
                                 <th>Produk</th>
@@ -18,43 +20,29 @@
                                 <td>@livewire('product.editable',['field'=>'keterangan','data'=>$data->keterangan,'id'=>$data->id],key('keterangan'.$data->id))</td>
                             </tr>
                             <tr>
+                                <th>Kode Item</th>
+                                <td> : </td>
+                                <td>{{$data->item_code}}</td>
+                            </tr>
+                            <tr>
                                 <th>UOM</th>
                                 <td> : </td>
                                 <td>{{isset($data->uom->name) ? $data->uom->name : '-'}}</td>
                             </tr>
-                            <tr>
-                                <th>Harga Jual</th>
-                                <td> : </td>
-                                <td>@livewire('product.editable',['field'=>'harga_jual','data'=>$data->harga_jual,'id'=>$data->id],key('harga_jual'.$data->id))</td>
-                            </tr>
-                            <!-- <tr>
-                                <th>Harga Jual</th>
-                                <td> : </td>
-                                <td>Rp. {{format_idr($data->harga_jual)}}</td>
-                            </tr>
-                            <tr>
-                                <th>PPN(11%)</th>
-                                <td> : </td>
-                                <td>Rp. {{format_idr($data->ppn)}}</td>
-                            </tr>
-                            <tr>
-                                <th>Harga Jual</th>
-                                <td> : </td>
-                                <td>Rp. {{format_idr($data->harga_jual+$data->ppn)}}</td>
-                            </tr> -->
-                        </table>
-                    </div>
-                    <div class="col-3">
-                        <table class="table">
                             <tr>
                                 <th>Stok</th>
                                 <td style="width:10px;"> : </td>
                                 <td>{{$data->qty}}</td>
                             </tr>
                             <tr>
-                                <th>Moving Stok</th>
+                                <th>Stok Terjual</th>
                                 <td style="width:10px;"> : </td>
                                 <td>{{$data->qty_moving}}</td>
+                            </tr>
+                            <tr>
+                                <th>Minimum Stok</th>
+                                <td style="width:10px;"> : </td>
+                                <td>@livewire('product.editable',['field'=>'minimum_stok','data'=>$data->minimum_stok,'id'=>$data->id],key('minimum_stok'.$data->id))</td>
                             </tr>
                             <tr>
                                 <th>Last Update</th>
@@ -63,7 +51,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div class="col-3">
+                    <div class="col-md-6">
                         @if(strlen($data->kode_produksi)>10 and is_numeric($data->kode_produksi))
                             <div>
                                 <label>Barcode</label>
@@ -76,6 +64,53 @@
                         @endif
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 pr-0 mx-0">
+        <div class="card mb-2">
+            <div class="body">  
+                <h6>Kalulator Harga</h6>
+                <hr />
+                <form id="basic-form" method="post" wire:submit.prevent="update">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Harga Jual Dasar</label>
+                                <input type="number" class="form-control" wire:model="harga" />
+                                <small class="text-info">*harga jual sebelum pajak</small>
+                            </div>
+                            <div class="form-group mb-0">
+                                <label class="fancy-checkbox">
+                                    <input type="checkbox" wire:model="is_ppn" value="1">
+                                    <span>Pajak {{$ppn ? "(" .format_idr($ppn) .")" : ''}}</span>
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label class="mb-0">Harga Produksi : {{format_idr($harga_produksi)}}</label><br />
+                                <small class="text-info">*Harga Jual Dasar + Pajak)</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Harga Jual (Rp)</label>
+                                <input type="number" class="form-control" wire:model="harga_jual" />
+                            </div>
+                            <div class="form-group">
+                                <label>Diskon (Rp)</label>
+                                <input type="number" class="form-control" wire:model="diskon" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Harga Jual + Diskon</label>
+                            <h2 class="text-info">Rp. {{@format_idr($harga_jual - $diskon)}}</h2>
+                        </div>
+                        <div class="col-md-12">
+                            <hr />
+                            <button type="submit" wire:loading.remove wire:target="update" class="btn btn-sm btn-info"><i class="fa fa-save"></i> Simpan Perubahan</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

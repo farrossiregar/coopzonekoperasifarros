@@ -3,10 +3,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="header row">
-                <div class="col-2">
-                    <input type="text" class="form-control" wire:model="keyword" placeholder="Pencarian" />
-                </div>
-                <div class="col-1">
+                <div class="col-md-1">
                     <div class="pl-3 pt-2 form-group mb-0" x-data="{open_dropdown:false}" @click.away="open_dropdown = false">
                         <a href="javascript:void(0)" x-on:click="open_dropdown = ! open_dropdown" class="dropdown-toggle">
                             Filter <i class="fa fa-search-plus"></i>
@@ -14,13 +11,21 @@
                         <div class="dropdown-menu show-form-filter" x-show="open_dropdown">
                             <form class="p-2">
                                 <div class="from-group my-2">
-                                    <input type="text" class="form-control" wire:model="filter_keyword" placeholder="Keyword" />
+                                    <select class="form-control" wire:model="filter.status">
+                                        <option value=""> -- Status -- </option>
+                                        <option value="1"> Sukses</option>
+                                        <option value="2"> Batal</option>
+                                        <option value="3"> Gagal</option>
+                                    </select>
                                 </div>
                                 <div class="from-group my-2">
-                                    <select class="form-control" wire:model="filter_status_pembayaran">
+                                    <input type="text" class="form-control" wire:model="filter.no_transaksi" placeholder="No Transaksi" />
+                                </div>
+                                <div class="from-group my-2">
+                                    <select class="form-control" wire:model="filter.pembayaran">
                                         <option value=""> -- Status Pembayaran -- </option>
                                         <option value="1"> Lunas</option>
-                                        <option value="1"> Belum Lunas</option>
+                                        <option value="2"> Belum Lunas</option>
                                     </select>
                                 </div>
                                 <div class="from-group my-2">
@@ -92,7 +97,7 @@
                                     <td><a href="{{route('transaksi.items',$item->id)}}">{{$item->no_transaksi}}</a></td>
                                     <td class="text-center">{{$item->metode_pembayaran ? metode_pembayaran($item->metode_pembayaran) : 'TUNAI'}}</td>
                                     <td>{{date('d-M-Y H:i',strtotime($item->created_at))}}</td>
-                                    <td>
+                                    <td class="text-center">
                                         @if($item->payment_date)
                                             <span class="badge badge-success">Lunas</span>
                                         @else

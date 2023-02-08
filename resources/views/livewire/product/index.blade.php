@@ -32,8 +32,12 @@
                                 <th>Produk</th>
                                 <th>UOM</th>
                                 <th>Stok</th>
+                                <th class="text-right">Harga Jual Dasar</th>
+                                <th class="text-right">PPN</th>
+                                <th class="text-right">Harga Produksi</th>
                                 <th class="text-right">Harga Jual</th>
-                                <th></th>
+                                <th class="text-right">Diskon</th>
+                                <th class="text-right">Harga Jual + Diskon</th>
                            </tr>
                         </thead>
                         <tbody>
@@ -54,8 +58,13 @@
                                 <td>@livewire('product.editable',['field'=>'product_uom_id','data'=>(isset($item->uom->name) ? $item->uom->name : ''),'id'=>$item->id],key('uom'.$item->id))</td>
                                 <td>@livewire('product.editable',['field'=>'qty','data'=>$item->qty,'id'=>$item->id],key('qty'.$item->id))</td>
                                 <td class="text-right">
-                                    @livewire('product.editable',['field'=>'harga_jual','data'=>$item->harga_jual,'id'=>$item->id],key('harga_jual'.$item->id))
-                                </td>                                
+                                    {{$item->harga ? format_idr($item->harga) : '-'}}
+                                </td>
+                                <td class="text-right">{{$item->ppn ? format_idr($item->ppn) : '-'}}</td>    
+                                <td class="text-right">{{$item->harga_produksi ? format_idr($item->harga_produksi) : '-'}}</td>    
+                                <td class="text-right">{{$item->harga_jual ? format_idr($item->harga_jual) : '-'}}</td>    
+                                <td class="text-right">{{$item->diskon ? format_idr($item->diskon) : '-'}}</td>    
+                                <td class="text-right">{{$item->harga_jual ? format_idr($item->harga_jual - $item->diskon) : '-'}}</td>    
                                 <td></td>
                             </tr>
                             @php($number--)

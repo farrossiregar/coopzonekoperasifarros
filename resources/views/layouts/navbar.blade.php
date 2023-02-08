@@ -24,22 +24,7 @@
                             </li>
                             <li><a href="{{route('user-member.index')}}" class="text-info icon-menu px-1">Keanggotaan</a></li>
                             <li><a href="{{route('transaksi.index')}}" class="text-info icon-menu px-1">Transaksi</a></li>
-                            <!-- <li class="dropdown">
-                                <a href="#" class="text-info dropdown-toggle icon-menu px-1" data-toggle="dropdown">Inventory</a>
-                                <ul class="dropdown-menu user-menu menu-icon">
-                                    <li><a href="{{route('product.index')}}">Produk</a></li>
-                                    <li><a href="{{route('vendor.index')}}">Vendor</a></li>
-                                    <li><a href="{{route('purchase-request.index')}}">Purchase Request</a></li>
-                                    <li><a href="{{route('purchase-order.index')}}">Purchase Order</a></li>
-                                </ul>
-                            </li> -->
-                            <li class="dropdown">
-                                <a href="#" class="text-info dropdown-toggle icon-menu px-1" data-toggle="dropdown">Produk</a>
-                                <ul class="dropdown-menu user-menu menu-icon">
-                                    <li><a href="{{ route('product.index') }}">Stok</a></li>
-                                    <li><a href="{{ route('konsinyasi.index') }}">Konsinyasi</a></li>
-                                </ul>
-                            </li>
+                            <li><a href="{{ route('product.index') }}" class="text-info icon-menu px-1">Produk</a></li>
                         @endif
                         @if(\Auth::user()->user_access_id==6)
                             <li><a href="{{route('kasir.index')}}" class="text-info icon-menu px-1">Dashboard</a></li>
