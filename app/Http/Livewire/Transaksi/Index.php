@@ -10,7 +10,8 @@ class Index extends Component
 {
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
-    public $filter=[];
+    public $filter=[],$filter_created_start,$filter_created_end;
+    public $penjualan_hari_ini=0,$transaksi_hari_ini=0,$penjualan_bulan_ini=0,$transaksi_bulan_ini=0;
     public function render()
     {
         $data = Transaksi::where('is_temp',0)->orderBy('id','DESC');
@@ -31,6 +32,21 @@ class Index extends Component
             }
         }
 
+        if($this->filter_created_start and $this->filter_created_end){
+            if($this->filter_created_start == $this->filter_created_end)
+                $data->whereDate('created_at',$this->filter_created_start);
+            else
+                $data->whereBetween('created_at',[$this->filter_created_start,$this->filter_created_end]);
+        }
+
         return view('livewire.transaksi.index')->with(['data'=>$data->paginate(500)]);
+    }
+
+    public function mount()
+    {
+        $this->penjualan_hari_ini = Transaksi::whereDate('created_at',date('Y-m-d'))->sum('amount');
+        $this->transaksi_hari_ini = Transaksi::whereDate('created_at',date('Y-m-d'))->count();
+        $this->penjualan_bulan_ini = Transaksi::whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->sum('amount');
+        $this->transaksi_bulan_ini = Transaksi::whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->count();
     }
 }

@@ -1,5 +1,57 @@
 @section('title', 'Transaksi')
 <div class="clearfix row">
+
+    <div class="col-lg-3 col-md-6">
+        <div class="card top_counter currency_state">
+            <div class="body">
+                <div class="icon">
+                    <i class="fa fa-shopping-cart text-info"></i>
+                </div>
+                <div class="content">
+                    <div class="text">Penjualan hari ini</div>
+                    <h5 class="number">Rp. {{format_idr($penjualan_hari_ini)}}</h5>
+                </div>
+            </div>                        
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="card top_counter currency_state">
+            <div class="body">
+                    <div class="icon">Rp</div>
+                <div class="content">
+                    <div class="text">Transaksi hari ini</div>
+                    <h5 class="number">{{$transaksi_hari_ini}}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="card top_counter currency_state">
+            <div class="body">
+                    <div class="icon text-danger">
+                        <i class="fa fa-calendar"></i>
+                    </div>
+                <div class="content">
+                    <div class="text">Penjualan bulan ini</div>
+                    <h5 class="number">Rp. {{format_idr($penjualan_bulan_ini)}}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-12">
+        <div class="card top_counter currency_state">
+            <div class="body">
+                    <div class="icon">
+                        <i class="fa fa-database text-success"></i>
+                    </div>
+                <div class="content">
+                    <div class="text">Transaksi bulan ini</div>
+                    <h5 class="number">{{format_idr($transaksi_bulan_ini)}}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <div class="col-lg-12">
         <div class="card">
             <div class="header row">
@@ -28,18 +80,9 @@
                                         <option value="2"> Belum Lunas</option>
                                     </select>
                                 </div>
-                                <div class="from-group my-2">
-                                    <select class="form-control" wire:model="filter_transaksi">
-                                        <option value=""> -- Status Transaksi -- </option>
-                                    </select>
-                                </div>
                                 <div class="form-group">
                                     <small>Tanggal Transaksi</small>
-                                    <input type="text" class="form-control tanggal_pengajuan" />
-                                </div>
-                                <div class="form-group">
-                                    <small>Tanggal Pembayaran</small>
-                                    <input type="text" class="form-control tanggal_pembayaran" />
+                                    <input type="text" class="form-control tanggal_transaksi" />
                                 </div>
                                 <a href="javascript:void(0)" wire:click="clear_filter()"><small>Clear filter</small></a>
                             </form>
@@ -52,7 +95,6 @@
                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                             <a class="dropdown-item" href="javascript:void(0);" wire:click="downloadExcel"><i class="fa fa-download"></i> Download</a>
                             <a href="javascript:void(0)" class="dropdown-item"><i class="fa fa-plus"></i> Transaksi</a>
-                            <a href="javascript:void(0)" class="dropdown-item" data-toggle="modal" data-target="#modal_upload"><i class="fa fa-upload"></i> Upload</a>
                         </div>
                     </div>
                     <span wire:loading>
@@ -214,19 +256,21 @@
     </div>
 </div>
 @push('after-scripts')
-<script>
-    Livewire.on('modal-konfirmasi-meninggal',(data)=>{
-        $("#modal_konfirmasi_meninggal").modal("show");
-    });
-    Livewire.on('modal-detail-meninggal',(data)=>{
-        $("#modal_detail_meninggal").modal("show");
-    });
+    <script type="text/javascript" src="{{ asset('assets/vendor/daterange/moment.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/vendor/daterange/daterangepicker.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/daterange/daterangepicker.css') }}" />
+    <script>
+        $('.tanggal_transaksi').daterangepicker({
+            opens: 'left',
+            locale: {
+                cancelLabel: 'Clear'
+            },
+            autoUpdateInput: false,
+        }, function(start, end, label) {
+            @this.set("filter_created_start", start.format('YYYY-MM-DD'));
+            @this.set("filter_created_end", end.format('YYYY-MM-DD'));
+            $('.tanggal_transaksi').val(start.format('DD/MM/YYYY') + '-' + end.format('DD/MM/YYYY'));
+        });
+        
 </script>
 @endpush
-@section('page-script')
-function autologin(action,name){
-    $("#modal_autologin form").attr("action",action);
-    $("#modal_autologin .modal-body").html('<p>Autologin as '+name+' ?</p>');
-    $("#modal_autologin").modal("show");
-}
-@endsection
