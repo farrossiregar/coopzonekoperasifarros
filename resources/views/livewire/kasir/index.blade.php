@@ -359,28 +359,11 @@
             var select_barcode = $('#barcode').select2({
                     placeholder: " -- BARCODE -- ",
                     data : {!!json_encode($data_product)!!}
-                    // ajax: {
-                    //     dataType: 'json',
-                    //     url: '{{route('api.product.data')}}',
-                    //     data: function (params) {
-                    //         var query = {
-                    //             search: params.term
-                    //         }
-                    //         return query;
-                    //     },
-                    //     processResults: function (data) {
-                    //         console.log(data);
-                    //         return {
-                    //             results: data.items
-                    //         };
-                    //     }
-                    // }
                 }
             );
 
             $('#barcode').on('change', function (e) {
                 var data = $(this).select2("val");
-                // @this.set('kode_produksi', data);
                 Livewire.emit('getProduct',data);
             });
 
@@ -391,26 +374,10 @@
             var select_anggota = $('#anggota').select2({
                     placeholder: " -- ANGGOTA -- ",
                     data : {!!json_encode($data_anggota)!!}
-                    // ajax: {
-                    //     dataType: 'json',
-                    //     url: '{{route('api.anggota.data')}}',
-                    //     data: function (params) {
-                    //         var query = {
-                    //             search: params.term
-                    //         }
-                    //         return query;
-                    //     },
-                    //     processResults: function (data) {
-                    //         return {
-                    //             results: data.items
-                    //         };
-                    //     }
-                    // }
                 }
             );
             $('#anggota').on('change', function (e) {
                 var data = $(this).select2("val");
-                // @this.set('no_anggota', data);
                 Livewire.emit('setAnggota',data);
             });
 
@@ -426,6 +393,7 @@
                     e.stopPropagation();
                 }); 
             });
+
         </script>
         <script src="{{ asset('assets/js/jquery.priceformat.min.js') }}"></script>
         <script>
