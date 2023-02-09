@@ -1,8 +1,7 @@
 @section('title', 'Transaksi')
 <div class="clearfix row">
-
     <div class="col-lg-3 col-md-6">
-        <div class="card top_counter currency_state">
+        <div class="card top_counter currency_state mb-2">
             <div class="body">
                 <div class="icon">
                     <i class="fa fa-shopping-cart text-info"></i>
@@ -15,7 +14,7 @@
         </div>
     </div>
     <div class="col-lg-3 col-md-6">
-        <div class="card top_counter currency_state">
+        <div class="card top_counter currency_state mb-2">
             <div class="body">
                     <div class="icon">Rp</div>
                 <div class="content">
@@ -26,7 +25,7 @@
         </div>
     </div>
     <div class="col-lg-3 col-md-6">
-        <div class="card top_counter currency_state">
+        <div class="card top_counter currency_state mb-2">
             <div class="body">
                     <div class="icon text-danger">
                         <i class="fa fa-calendar"></i>
@@ -39,7 +38,7 @@
         </div>
     </div>
     <div class="col-lg-3 col-md-12">
-        <div class="card top_counter currency_state">
+        <div class="card top_counter currency_state mb-2">
             <div class="body">
                     <div class="icon">
                         <i class="fa fa-database text-success"></i>
