@@ -14,12 +14,13 @@ class Index extends Component
     public $data=[],$kode_produksi,$qty=1,$sub_total=0,$total=0,$msg_error="",$metode_pembayaran=4,$success=false;
     public $no_transaksi='',$transaksi,$jenis_transaksi=2,$msg_error_jenis_transaksi,$no_anggota,$anggota,$temp_anggota;
     public $status_transaksi=0,$uang_tunai=0,$total_kembali=0,$total_qty=0,$message_metode_pembayaran,$ppn,$total_and_ppn,$no_kartu_debit_kredit;
-    public $user_kasir,$msg_error_anggota,$url_cetak_struk,$data_product=[],$data_anggota=[];
+    public $user_kasir,$msg_error_anggota,$url_cetak_struk,$data_product=[],$data_anggota=[],$selected_item;
     protected $listeners = ['event_bayar' => 'event_bayar',
                             'okeAnggota'=>'okeAnggota',
                             'deleteAnggota'=>'deleteAnggota',
                             'getProduct'=>'getProduct',
-                            'setAnggota'=>'setAnggota'];
+                            'setAnggota'=>'setAnggota',
+                            'edit_item'=>'setSelectedItem'];
     public function render()
     {
         return view('livewire.kasir.index')->layout('layouts.kasir');
@@ -40,6 +41,12 @@ class Index extends Component
             $this->data_anggota[$k]['id'] = $item->no_anggota_platinum;
             $this->data_anggota[$k]['text'] = $item->no_anggota_platinum .'/'. $item->name;
         }
+    }
+
+    public function setSelectedItem($key)
+    {
+        $this->selected_item = $this->data_product[$key];
+        dd($this->selected_item);
     }
 
     public function updated($propertyName)
