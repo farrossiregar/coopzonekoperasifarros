@@ -278,7 +278,7 @@
                 <form wire:submit.prevent="setAnggota">
                     <div class="modal-body">
                         <div class="form-group">
-                            <label>ANGGOTA (T)</label>
+                            <label>ANGGOTA <code>(ALT+T)</code></label>
                             <div wire:ignore>
                                 <select class="form-control" id="anggota">
                                     <option value=""> -- ANGGOTA -- </option>
@@ -319,10 +319,10 @@
                             <span class="sr-only">{{ __('Loading...') }}</span>
                         </span>
                         @if($temp_anggota)
-                            <a href="javascript:void(0)" wire:loading.remove wire:target="setAnggota" wire:click="okeAnggota" id="btn_find_anggota_oke" class="btn btn-success col-9 btn-lg"><i class="fa fa-check-circle"></i> Oke (U)</a>
-                            <a href="javascript:void(0)" wire:loading.remove wire:target="setAnggota" wire:click="deleteAnggota" id="btn_find_anggota_hapus" class="btn btn-danger col-3 btn-lg"><i class="fa fa-times"></i> Hapus (I)</a>
+                            <a href="javascript:void(0)" wire:loading.remove wire:target="setAnggota" wire:click="okeAnggota" id="btn_find_anggota_oke" class="btn btn-success col-9 btn-lg"><i class="fa fa-check-circle"></i> Oke <code>(ALT+U)</code></a>
+                            <a href="javascript:void(0)" wire:loading.remove wire:target="setAnggota" wire:click="deleteAnggota" id="btn_find_anggota_hapus" class="btn btn-danger col-3 btn-lg"><i class="fa fa-times"></i> Hapus <code>(ALT+I)</code></a>
                         @else
-                            <button wire:loading.remove wire:target="setAnggota" type="submit" id="btn_find_anggota" class="btn btn-warning col-12 btn-lg"><i class="fa fa-search-plus"></i> FIND (Y)</button>
+                            <button wire:loading.remove wire:target="setAnggota" type="submit" id="btn_find_anggota" class="btn btn-warning col-12 btn-lg"><i class="fa fa-search-plus"></i> FIND <code>(ALT+Y)</code></button>
                         @endif
                     </div>
                 </form>
@@ -419,7 +419,7 @@
                         $("#btn_input_anggota").trigger('click');
                     }
                     if(e.which==84){ // T
-                        $("#no_anggota").focus();
+                        $("#anggota").select2("open");
                     }
                     if(e.which==89){ // T
                         $("#btn_find_anggota").trigger('click');

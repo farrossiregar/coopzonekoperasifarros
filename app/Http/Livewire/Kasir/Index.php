@@ -190,7 +190,18 @@ class Index extends Component
 
         $this->data = [];$this->total=0;$this->sub_total=0;$this->success = true;
         $this->status_transaksi=0;
-        $this->reset('transaksi','anggota','uang_tunai');
+        $this->reset_transaksi();
+    }
+
+    public function reset_transaksi()
+    {
+        $this->uang_tunai = 0;$this->total_kembali = 0;$this->total_qty = 0;
+        $this->ppn = 0;$this->total_and_ppn = 0;
+        $this->reset('transaksi',
+                    'anggota',
+                    'uang_tunai',
+                    'temp_anggota',
+                    'no_kartu_debit_kredit');
     }
 
     public function cetakStruk()
@@ -273,6 +284,7 @@ class Index extends Component
         $this->transaksi->save(); $this->reset('transaksi');
         $this->data = [];$this->total = 0;$this->sub_total = 0;
         $this->status_transaksi = 0;
+        $this->reset_transaksi();
     }
 
     public function start_transaction()
