@@ -349,6 +349,8 @@
     @push('after-scripts')
         <link rel="stylesheet" href="{{ asset('assets/vendor/select2/css/select2.min.css') }}"/>
         <script src="{{ asset('assets/vendor/select2/js/select2.min.js') }}"></script>
+        <script src="{{ asset('assets/js/jquery.priceformat.min.js') }}"></script>
+
         <style>
             .select2-container .select2-selection--single {height:36px;padding-left:10px;}
             .select2-container .select2-selection--single .select2-selection__rendered{padding-top:1px;}
@@ -393,13 +395,8 @@
                     e.stopPropagation();
                 }); 
             });
-
-        </script>
-        <script src="{{ asset('assets/js/jquery.priceformat.min.js') }}"></script>
-        <script>
-
             document.addEventListener("keydown", onKeyPressed);
-            
+    
             function onKeyPressed(e) {
                 if(e.which==13){
                     console.log(document.activeElement);
