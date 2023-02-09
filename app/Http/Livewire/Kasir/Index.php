@@ -268,9 +268,11 @@ class Index extends Component
 
     public function cancel_transaction()
     {
-        $this->transaksi->delete(); $this->reset('transaksi');
-        $this->data = [];$this->total=0;$this->sub_total=0;
-        $this->status_transaksi=0;
+        $this->transaksi->status = 2;
+        $this->transaksi->is_temp = 0;
+        $this->transaksi->save(); $this->reset('transaksi');
+        $this->data = [];$this->total = 0;$this->sub_total = 0;
+        $this->status_transaksi = 0;
     }
 
     public function start_transaction()
