@@ -39,8 +39,7 @@ class Upload extends Component
                 $produk = $i[3];
                 $qty = $i[4];
                 $uom = $i[5];
-                $price = $i[6];
-
+                $price = format_idr($i[6]);
                 $product = Product::where('keterangan',$produk)->first();
                 if(!$product){
                     $product = new Product();

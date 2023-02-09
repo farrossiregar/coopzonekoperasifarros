@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\Product;
+use App\Models\Transaksi;
+use App\Models\TransaksiItem;
 
 class SyncProductByExcel extends Command
 {
@@ -38,6 +40,17 @@ class SyncProductByExcel extends Command
      */
     public function handle()
     {
+        foreach(Transaksi::whereNull('is_migrate')->get() as $item){
+            echo "No Transaksi : {$item->no_transaksi}\n";
+            TransaksiItem::where('transaksi_id',$item->id)->delete();
+            $item->delete();
+        }
+        return;
+
+
+        // $product = Product::where('keterangan','ALK POWER BANK ROBOT RT180')->first();
+        // echo "{$product->keterangan}\n";
+        // return;
         ini_set('memory_limit', '-1');
 
         $inputFileName = './public/sto.xlsx';
@@ -51,17 +64,13 @@ class SyncProductByExcel extends Command
             $num++;
             if($num<=1) continue;
             
-            preg_match('/\\s+(.*)\s+/', $item['D'], $name);
-            if(!isset($name[1])) continue;
+            // preg_match('/\\s+(.*)\s+/', $item['D'], $name);
+            // if(!isset($name[1])) continue;
 
-            $name = trim($name[1]);
-            // $price = number_format($item['E'], 2, '.', '');
-
+            $name = trim($item['D']);
             $price = replace_idr($item['E']);
             $item_code = $item['C'];
-            
-            $product = Product::where('item_code',$item_code)->first();
-            
+            $product = Product::where('keterangan','LIKE',$name)->first();
             if(!$product){
                 $this->info("{$k}. SKIP :{$item_code} - ".$name);
                 continue;
@@ -69,7 +78,7 @@ class SyncProductByExcel extends Command
 
             $product->harga = $price;
             $product->harga_jual = $price;
-            $product->save(); continue;
+            $product->save();
 
             echo $k .'.'. $item_code."/".$name ."\n";
         }
