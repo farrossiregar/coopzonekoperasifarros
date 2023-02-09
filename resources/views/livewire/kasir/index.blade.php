@@ -125,7 +125,7 @@
                             <div class="col-7 pr-0">
                                 <a href="javascript:voi(0)" data-toggle="modal" data-target="#modal_pembayaran" id="btn_bayar" wire:loading.remove wire:target="bayar,cancel_transaction" class="btn btn-info btn-lg col-12" style=""><i class="fa fa-check-circle"></i> <span>BAYAR <code>(ALT+A)</code></span></a>
                             </div>
-                            <div class="col-5 pr-0">
+                            <div class="col-5">
                                 <a href="javascript:void(0)" wire:click="cancel_transaction" wire:loading.remove wire:target="bayar,cancel_transaction" class="btn btn-danger btn-lg col-12" id="btn_batalkan"><i class="fa fa-close"></i> BATAL <code>(ALT+S)</code></a>
                             </div>
                         </div>

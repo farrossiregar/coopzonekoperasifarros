@@ -31,43 +31,51 @@
                                 <th>Kode Produksi / Barcode</th>
                                 <th>Produk</th>
                                 <th>UOM</th>
-                                <th>Stok</th>
+                                <th class="text-center">Stok</th>
+                                <th class="text-center">Moving Stok</th>
+                                <th class="text-center">Mininum Stok</th>
                                 <th class="text-right">Harga Jual Dasar</th>
                                 <th class="text-right">PPN</th>
                                 <th class="text-right">Harga Produksi</th>
                                 <th class="text-right">Harga Jual</th>
                                 <th class="text-right">Diskon</th>
                                 <th class="text-right">Harga Jual + Diskon</th>
+                                <th></th>
                            </tr>
                         </thead>
                         <tbody>
                             @php($number= $data->total() - (($data->currentPage() -1) * $data->perPage()) )
                             @foreach($data as $k => $item)
-                            <tr>
-                                <td style="width: 50px;">{{$number}}</td>
-                                <td class="text-center">
-                                    @if($item->status==1)
-                                        <span class="badge badge-success">Aktif</span>
-                                    @endif
-                                    @if($item->status==0 || $item->status=="")
-                                        <span class="badge badge-default">Tidak Aktif</span>
-                                    @endif
-                                </td>
-                                <td>@livewire('product.editable',['field'=>'kode_produksi','data'=>$item->kode_produksi,'id'=>$item->id],key('kode_produksi'.$item->id))</td>
-                                <td><a href="{{route('product.detail',$item->id)}}">{{$item->keterangan}}</a></td>
-                                <td>@livewire('product.editable',['field'=>'product_uom_id','data'=>(isset($item->uom->name) ? $item->uom->name : ''),'id'=>$item->id],key('uom'.$item->id))</td>
-                                <td>@livewire('product.editable',['field'=>'qty','data'=>$item->qty,'id'=>$item->id],key('qty'.$item->id))</td>
-                                <td class="text-right">
-                                    {{$item->harga ? format_idr($item->harga) : '-'}}
-                                </td>
-                                <td class="text-right">{{$item->ppn ? format_idr($item->ppn) : '-'}}</td>    
-                                <td class="text-right">{{$item->harga_produksi ? format_idr($item->harga_produksi) : '-'}}</td>    
-                                <td class="text-right">{{$item->harga_jual ? format_idr($item->harga_jual) : '-'}}</td>    
-                                <td class="text-right">{{$item->diskon ? format_idr($item->diskon) : '-'}}</td>    
-                                <td class="text-right">{{$item->harga_jual ? format_idr($item->harga_jual - $item->diskon) : '-'}}</td>    
-                                <td></td>
-                            </tr>
-                            @php($number--)
+                                @php($bg_minimum_stok="transparent")
+                                
+                                <tr>
+                                    <td style="width: 50px;">{{$number}}</td>
+                                    <td class="text-center">
+                                        @if($item->status==1)
+                                            <span class="badge badge-success">Aktif</span>
+                                        @endif
+                                        @if($item->status==0 || $item->status=="")
+                                            <span class="badge badge-default">Tidak Aktif</span>
+                                        @endif
+                                    </td>
+                                    <td>@livewire('product.editable',['field'=>'kode_produksi','data'=>$item->kode_produksi,'id'=>$item->id],key('kode_produksi'.$item->id))</td>
+                                    <td><a href="{{route('product.detail',$item->id)}}">{{$item->keterangan}}</a></td>
+                                    <td>@livewire('product.editable',['field'=>'product_uom_id','data'=>(isset($item->uom->name) ? $item->uom->name : ''),'id'=>$item->id],key('uom'.$item->id))</td>
+                                    <td>@livewire('product.editable',['field'=>'qty','data'=>$item->qty,'id'=>$item->id],key('qty'.$item->id))</td>
+                                    <td class="text-center">{{$item->qty_moving}}</td>
+                                    <td class="text-center" style="background: {{$bg_minimum_stok}}">
+                                        @livewire('product.editable',['field'=>'minimum_stok','data'=>$item->minimum_stok,'id'=>$item->id],key('minimum_stok'.$item->id))</td>
+                                    <td class="text-right">
+                                        {{$item->harga ? format_idr($item->harga) : '-'}}
+                                    </td>
+                                    <td class="text-right">{{$item->ppn ? format_idr($item->ppn) : '-'}}</td>    
+                                    <td class="text-right">{{$item->harga_produksi ? format_idr($item->harga_produksi) : '-'}}</td>    
+                                    <td class="text-right">{{$item->harga_jual ? format_idr($item->harga_jual) : '-'}}</td>    
+                                    <td class="text-right">{{$item->diskon ? format_idr($item->diskon) : '-'}}</td>    
+                                    <td class="text-right">{{$item->harga_jual ? format_idr($item->harga_jual - $item->diskon) : '-'}}</td>    
+                                    <td></td>
+                                </tr>
+                                @php($number--)
                             @endforeach
                         </tbody>
                     </table>

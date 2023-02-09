@@ -49,4 +49,9 @@ class Index extends Component
         $this->penjualan_bulan_ini = Transaksi::whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->sum('amount');
         $this->transaksi_bulan_ini = Transaksi::whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->count();
     }
+
+    public function downloadExcel()
+    {
+        
+    }
 }

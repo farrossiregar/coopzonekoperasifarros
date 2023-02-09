@@ -70,7 +70,7 @@
     <div class="col-md-6 pr-0 mx-0">
         <div class="card mb-2">
             <div class="body">  
-                <h6>Kalulator Harga</h6>
+                <h6>Kalkulator Harga</h6>
                 <hr />
                 <form id="basic-form" method="post" wire:submit.prevent="update">
                     <div class="row">
