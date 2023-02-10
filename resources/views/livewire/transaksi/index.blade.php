@@ -16,7 +16,9 @@
     <div class="col-lg-3 col-md-6">
         <div class="card top_counter currency_state mb-2">
             <div class="body">
-                    <div class="icon">Rp</div>
+                    <div class="icon text-warning">
+                        <i class="fa fa-database"></i>
+                    </div>
                 <div class="content">
                     <div class="text">Transaksi hari ini</div>
                     <h5 class="number">{{$transaksi_hari_ini}}</h5>

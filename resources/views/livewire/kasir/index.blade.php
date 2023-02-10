@@ -7,7 +7,6 @@
                     <div class="col-md-5">
                         <div wire:ignore>
                             <label>KODE PRODUKSI / BARCODE <code>(ALT+Q)</code></label>
-                            <!-- <input type="text" class="form-control" id="barcode" wire:model="kode_produksi" wire:keydown.enter="getProduct" placeholder="BARCODE" /> -->
                             <select class="form-control" id="barcode">
                                 <option value=""> -- BARCODE -- </option>
                             </select>
@@ -28,7 +27,7 @@
                     </div>
                 </div>
                 <div class="table-responsive">
-                    <table class="table center-aligned-table table-bordered" id="table_product">
+                    <table class="table center-aligned-table table-bordered table-hovered" id="table_product">
                         <thead>
                             <tr style="background:#16a3b8;color:white;">
                                 <th class="text-center">NO</th>
@@ -49,7 +48,7 @@
                         @php($num=1)
                         <tbody>
                             @foreach($data as $k => $item)
-                                <tr tabindex="0">
+                                <tr tabindex="0" style="cursor:pointer;" wire:click="$emit('edit_item',{{$k}})">
                                     <td class="text-center" onkeypress="alert(0)">{{$num}}@php($num++)</td>
                                     <td>{{$item['kode_produksi']}}</td>
                                     <td>{{$item['keterangan']}}</td>
@@ -68,7 +67,6 @@
             </div>
         </div>
     </div>
-
     <div class="col-md-4">
         <div class="card">
             <div class="body">
@@ -123,7 +121,7 @@
                                 <span class="sr-only">{{ __('Loading...') }}</span>
                             </span>
                             <div class="col-7 pr-0">
-                                <a href="javascript:voi(0)" data-toggle="modal" data-target="#modal_pembayaran" id="btn_bayar" wire:loading.remove wire:target="bayar,cancel_transaction" class="btn btn-info btn-lg col-12" style=""><i class="fa fa-check-circle"></i> <span>BAYAR <code>(ALT+A)</code></span></a>
+                                <a href="javascript:voi(0)" data-toggle="modal" data-target="#modal_pembayaran" wire:click="$emit('modal_bayar',true)" id="btn_bayar" wire:loading.remove wire:target="bayar,cancel_transaction" class="btn btn-info btn-lg col-12" style=""><i class="fa fa-check-circle"></i> <span>BAYAR <code>(ALT+A)</code></span></a>
                             </div>
                             <div class="col-5">
                                 <a href="javascript:void(0)" wire:click="cancel_transaction" wire:loading.remove wire:target="bayar,cancel_transaction" class="btn btn-danger btn-lg col-12" id="btn_batalkan"><i class="fa fa-close"></i> BATAL <code>(ALT+S)</code></a>
@@ -188,7 +186,7 @@
                                                     <td colspan="2">
                                                         <div class="mt-2"> 
                                                             <strong>UANG TUNAI</strong>
-                                                            <input type="text" class="form-control text-right format_price" wire:model="uang_tunai" style="font-size:20px;" />
+                                                            <input type="text" class="form-control text-right format_price_uang_tunai" wire:model="uang_tunai" style="font-size:20px;" />
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -266,6 +264,56 @@
                             <a href="javascript:void(0)" class="btn btn-success col-6 btn-lg" data-dismiss="modal" aria-label="Close"><i class="fa fa-check-circle"></i> OKE</a>
                             <a href="javascript:void(0)" class="btn btn-info col-6 btn-lg" wire:click="cetakStruk"><i class="fa fa-print"></i> CETAK</a>
                         @endif
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div wire:ignore.self class="modal fade" id="modal_edit_item" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content modal-sm">
+                <form wire:submit.prevent="setAnggota">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>KODE PRODUKSI / BARCODE	</label>
+                            <span>{{isset($selected_item) ? $selected_item['kode_produksi'] : '-'}}</span>
+                        </div>
+                        <hr />
+                        <div class="form-group">
+                            <label>PRODUK</label>
+                            <span>{{isset($selected_item) ? $selected_item['keterangan'] : '-'}}</span>
+                        </div>
+                        <hr />
+
+                        <div class="form-group">
+                            <label>HARGA</label>
+                            <span>{{isset($selected_item) ? $selected_item['harga_jual'] : '-'}}</span>
+                        </div>
+                        <hr />
+
+                        <div class="form-group">
+                            <label>QTY</label>
+                            <input type="number" class="form-control" />
+                        </div>
+                        <hr />
+                        <div class="form-group">
+                            <label>SISA STOK</label>
+                            <span>{{isset($selected_item) ? $selected_item['stock'] : '-'}}</span>
+                        </div>
+                        <hr />
+                        <div class="form-group">
+                            <label>TOTAL</label>
+                            
+                        </div
+                    </div>
+                    <div class="modal-footer">
+                        <span wire:loading wire:target="getProduct">
+                            <i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
+                            <span class="sr-only">{{ __('Loading...') }}</span>
+                        </span>
+                        <button wire:loading.remove wire:target="setAnggota" type="submit" id="btn_find_anggota" class="btn btn-info col-12 btn-lg"><i class="fa fa-save"></i> Simpan </button>
                     </div>
                 </form>
             </div>
@@ -358,6 +406,7 @@
             .select2-container {width: 100% !important;}
         </style>
         <script>
+            var modal_bayar = false;
             var select_barcode = $('#barcode').select2({
                     placeholder: " -- BARCODE -- ",
                     data : {!!json_encode($data_product)!!}
@@ -369,6 +418,23 @@
                 Livewire.emit('getProduct',data);
             });
 
+            Livewire.on('edit_item',(id)=>{
+                $("#modal_edit_item").modal("show");
+            });
+
+            Livewire.on('modal_bayar',(val)=>{
+                modal_bayar = val;
+                if(val){
+                    setTimeout(function(){
+                        $(".format_price_uang_tunai").priceFormat({
+                            prefix: '',
+                            centsSeparator: '.',
+                            thousandsSeparator: '.',
+                            centsLimit: 0
+                        });
+                    },1000);
+                }
+            });
             Livewire.on('clear-barcode',()=>{
                 $('#barcode').val("").trigger('change');
             });
@@ -382,7 +448,6 @@
                 var data = $(this).select2("val");
                 Livewire.emit('setAnggota',data);
             });
-
 
             // on first focus (bubbles up to document), open the menu
             $(document).on('focus', '.select2-selection.select2-selection--single', function (e) {
@@ -432,13 +497,15 @@
                     }
                 }
             }
-           
+            
 
-            $('.format_price').priceFormat({
-                prefix: '',
-                centsSeparator: '.',
-                thousandsSeparator: '.',
-                centsLimit: 0
+            $('.format_price').each(function(i, obj) {
+                $(this).priceFormat({
+                    prefix: '',
+                    centsSeparator: '.',
+                    thousandsSeparator: '.',
+                    centsLimit: 0
+                });
             });
             
             var transaction_id;
