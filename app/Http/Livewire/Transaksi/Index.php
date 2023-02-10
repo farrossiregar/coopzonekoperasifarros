@@ -39,7 +39,9 @@ class Index extends Component
                 $data->whereBetween('created_at',[$this->filter_created_start,$this->filter_created_end]);
         }
 
-        return view('livewire.transaksi.index')->with(['data'=>$data->paginate(500)]);
+        $total = clone $data;
+
+        return view('livewire.transaksi.index')->with(['data'=>$data->paginate(500),'total'=>$total->sum('amount')]);
     }
 
     public function mount()
