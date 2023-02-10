@@ -20,7 +20,15 @@ Route::get('register', App\Http\Livewire\Register::class)->name('register');
 Route::get('konfirmasi-pembayaran',App\Http\Livewire\KonfirmasiPembayaran::class)->name('konfirmasi-pembayaran');
 Route::get('konfirmasi-pendaftaran',App\Http\Livewire\KonfirmasiPendaftaran::class)->name('konfirmasi-pendaftaran');
 Route::get('linksakti',function(){
-    \Auth::loginUsingId(4);
+    \App\Jobs\SyncCoopzone::dispatch(
+        [
+            'url'=>'koperasi/user/edit',
+            'field'=>'plafond_digunakan',
+            'value'=>10000,
+            'no_anggota'=>123456
+        ]
+    );
+    //\Auth::loginUsingId(4);
 
     return 'test';
 });

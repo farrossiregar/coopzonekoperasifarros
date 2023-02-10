@@ -8,6 +8,7 @@ use App\Models\Transaksi;
 use App\Models\TransaksiItem;
 use App\Models\UserMember;
 use App\Models\UserKasir;
+use App\Jobs\SyncCoopzone;
 
 class Index extends Component
 {    
@@ -142,13 +143,15 @@ class Index extends Component
             }else{
                 $this->anggota->plafond_digunakan = $this->anggota->plafond_digunakan + $this->total_and_ppn;
                 $this->anggota->save();
-                // Sinkron Coopzone
-                $response = sinkronCoopzone([
-                    'url'=>'koperasi/user/edit',
-                    'field'=>'plafond_digunakan',
-                    'value'=>$this->anggota->plafond_digunakan,
-                    'no_anggota'=>$this->anggota->no_anggota_platinum
-                ]);
+
+                SyncCoopzone::dispatch(
+                    [
+                        'url'=>'koperasi/user/edit',
+                        'field'=>'plafond_digunakan',
+                        'value'=>$this->anggota->plafond_digunakan,
+                        'no_anggota'=>$this->anggota->no_anggota_platinum
+                    ]
+                );
             }   
         }
 
@@ -164,23 +167,27 @@ class Index extends Component
                 $this->anggota->simpanan_ku = $this->anggota->simpanan_ku - $this->total_and_ppn;
                 $this->anggota->save();
                 // Sinkron Coopzone
-                $response = sinkronCoopzone([
-                    'url'=>'koperasi/user/edit',
-                    'field'=>'simpanan_ku',
-                    'value'=>$this->anggota->simpanan_ku,
-                    'no_anggota'=>$this->anggota->no_anggota_platinum
-                ]);
+                SyncCoopzone::dispatch(
+                    [
+                        'url'=>'koperasi/user/edit',
+                        'field'=>'simpanan_ku',
+                        'value'=>$this->anggota->simpanan_ku,
+                        'no_anggota'=>$this->anggota->no_anggota_platinum
+                    ]
+                );
             }
         }
         
         if($this->jenis_transaksi==1){
             // Sinkron Coopzone
-            $response = sinkronCoopzone([
-                'url'=>'koperasi/notifikasi/store',
-                'no_anggota'=>$this->anggota->no_anggota_platinum,
-                'message'=>"Kamu telah melakukan transaksi sebesar Rp. ".format_idr($this->total_and_ppn).' di '.get_setting('company'),
-                'title'=>'Transaksi #'.$this->transaksi->no_transaksi.' berhasil'
-            ]);
+            SyncCoopzone::dispatch(
+                [
+                    'url'=>'koperasi/notifikasi/store',
+                    'no_anggota'=>$this->anggota->no_anggota_platinum,
+                    'message'=>"Kamu telah melakukan transaksi sebesar Rp. ".format_idr($this->total_and_ppn).' di '.get_setting('company'),
+                    'title'=>'Transaksi #'.$this->transaksi->no_transaksi.' berhasil'
+                ]
+            );
         }
 
         if($this->anggota) {
