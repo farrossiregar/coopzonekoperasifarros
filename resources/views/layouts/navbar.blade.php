@@ -18,8 +18,8 @@
                                     <li><a href="{{ route('jenis-simpanan.index') }}">Jenis Simpanan</a></li>
                                     <li><a href="{{ route('jenis-pinjaman.index') }}">Jenis Pembiayaan</a></li>
                                     <li><a href="{{ route('users.index') }}">Users</a></li>
-                                    <li><a href="{{ route('bank-account.index') }}">Bank Account</a></li>
-                                    <li><a href="{{ route('setting') }}">Setting</a></li>
+                                    <li><a href="{{ route('bank-account.index') }}">Akun Bank</a></li>
+                                    <li><a href="{{ route('setting') }}">Pengaturan</a></li>
                                 </ul>
                             </li>
                             <li><a href="{{route('user-member.index')}}" class="text-info icon-menu px-1">Keanggotaan</a></li>

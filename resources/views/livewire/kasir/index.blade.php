@@ -48,7 +48,7 @@
                         @php($num=1)
                         <tbody>
                             @foreach($data as $k => $item)
-                                <tr tabindex="0" style="cursor:pointer;" wire:click="$emit('edit_item',{{$k}})">
+                                <tr tabindex="0" title="Klik untuk merubah QTY" style="cursor:pointer;" wire:click="$emit('edit_item',{{$k}})">
                                     <td class="text-center" onkeypress="alert(0)">{{$num}}@php($num++)</td>
                                     <td>{{$item['kode_produksi']}}</td>
                                     <td>{{$item['keterangan']}}</td>
@@ -141,6 +141,9 @@
             font-size:16px;
         }
         .table_total tr th,.table_total tr td {padding-top:10px;padding-bottom:10px;}
+        .table .active_item {
+                border: 3px solid #16a3b8
+            }
     </style>
     <div wire:ignore.self class="modal fade" id="modal_pembayaran" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -274,46 +277,44 @@
     <div wire:ignore.self class="modal fade" id="modal_edit_item" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content modal-sm">
-                <form wire:submit.prevent="setAnggota">
+                <form wire:submit.prevent="updateProduct">
                     <div class="modal-body">
-                        <div class="form-group">
-                            <label>KODE PRODUKSI / BARCODE	</label>
+                        <div class="form-group mb-0">
+                            <small>KODE PRODUKSI / BARCODE</small><br />
                             <span>{{isset($selected_item) ? $selected_item['kode_produksi'] : '-'}}</span>
                         </div>
-                        <hr />
-                        <div class="form-group">
-                            <label>PRODUK</label>
+                        <hr class="pt-0 mt-0" />
+                        <div class="form-group mb-0">
+                            <small>PRODUK</small><br />
                             <span>{{isset($selected_item) ? $selected_item['keterangan'] : '-'}}</span>
                         </div>
-                        <hr />
-
-                        <div class="form-group">
-                            <label>HARGA</label>
-                            <span>{{isset($selected_item) ? $selected_item['harga_jual'] : '-'}}</span>
+                        <hr class="pt-0 mt-0" />
+                        <div class="form-group mb-0">
+                            <small>HARGA</small><br />
+                            <span>{{isset($selected_item) ? format_idr($selected_item['harga_jual']) : '-'}}</span>
                         </div>
-                        <hr />
-
-                        <div class="form-group">
-                            <label>QTY</label>
-                            <input type="number" class="form-control" />
+                        <hr class="pt-0 mt-0" />
+                        <div class="form-group mb-0">
+                            <small>QTY</small>
+                            <input type="number" class="form-control" id="edit_stock" wire:model="edit_stock" />
                         </div>
-                        <hr />
-                        <div class="form-group">
-                            <label>SISA STOK</label>
+                        <hr class="pt-0 mt-0" />
+                        <div class="form-group mb-0">
+                            <small>SISA STOK</small><br />
                             <span>{{isset($selected_item) ? $selected_item['stock'] : '-'}}</span>
                         </div>
-                        <hr />
-                        <div class="form-group">
-                            <label>TOTAL</label>
-                            
-                        </div
+                        <hr class="pt-0 mt-0" />
+                        <div class="form-group mb-0">
+                            <small>TOTAL</small>
+                            <label>{{isset($selected_item) ? format_idr($selected_item['harga_jual'] * $edit_stock) : 0}}</label>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <span wire:loading wire:target="getProduct">
                             <i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
                             <span class="sr-only">{{ __('Loading...') }}</span>
                         </span>
-                        <button wire:loading.remove wire:target="setAnggota" type="submit" id="btn_find_anggota" class="btn btn-info col-12 btn-lg"><i class="fa fa-save"></i> Simpan </button>
+                        <button wire:loading.remove wire:target="updateProduct" type="submit" class="btn btn-info col-12 btn-lg"><i class="fa fa-save"></i> Simpan </button>
                     </div>
                 </form>
             </div>
@@ -398,7 +399,6 @@
         <link rel="stylesheet" href="{{ asset('assets/vendor/select2/css/select2.min.css') }}"/>
         <script src="{{ asset('assets/vendor/select2/js/select2.min.js') }}"></script>
         <script src="{{ asset('assets/js/jquery.priceformat.min.js') }}"></script>
-
         <style>
             .select2-container .select2-selection--single {height:36px;padding-left:10px;}
             .select2-container .select2-selection--single .select2-selection__rendered{padding-top:1px;}
@@ -418,8 +418,15 @@
                 Livewire.emit('getProduct',data);
             });
 
+            Livewire.on('close-modal',()=>{
+                $(".modal").modal('hide');
+            })
+
             Livewire.on('edit_item',(id)=>{
                 $("#modal_edit_item").modal("show");
+                setTimeout(function(){
+                    $("#edit_stock").focus();
+                },1000);
             });
 
             Livewire.on('modal_bayar',(val)=>{

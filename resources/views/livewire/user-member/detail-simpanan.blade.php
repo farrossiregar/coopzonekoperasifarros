@@ -6,7 +6,7 @@
             </select>
         </div>
         <div class="col-md-2">
-            <select class="form-control">
+            <select class="form-control" wire:model="filter.jenis_simpanan_id">
                 <option value=""> -- Jenis Simpanan -- </option>
                 @foreach($jenis_simpanan as $item)
                     <option value="{{$item->id}}">{{$item->name}}</option>
@@ -15,6 +15,7 @@
         </div>
         <div class="col-md-8">
             <a href="javascript:void(0)" data-target="#modal_add_simpanan" data-toggle="modal" class="btn btn-info"><i class="fa fa-plus"></i> Tambah</a>
+            <a href="javascript:void(0)" data-target="#modal_setting_simpanan" data-toggle="modal" class="btn btn-warning"><i class="fa fa-gear"></i> Pengaturan</a>
         </div>
     </div>
     <div class="table-responsive mt-3">
@@ -28,7 +29,8 @@
                     <th>Keterangan</th>
                     <th>Created</th>
                     <th>Payment Date</th>
-                    <th>Nominal</th>
+                    <th class="text-right">Nominal<br />
+                        <label class="text-info">({{format_idr($total_amount)}})</label></th>
                     <th></th>
                 </tr>
             </thead>
@@ -50,7 +52,7 @@
                         <td>{{$item->description}}</td>
                         <td>{{date('d-M-Y',strtotime($item->created_at))}}</td>
                         <td>{{$item->payment_date ? date('d-M-Y',strtotime($item->payment_date)) : '-'}}</td>
-                        <td>{{format_idr($item->amount)}}</td>
+                        <td class="text-right">{{format_idr($item->amount)}}</td>
                         <td>
                             @if($item->status==0)
                                 <a href="javascript:void(0)" class="badge badge-info badge-active" wire:click="$emit('set_id',{{$item->id}})" data-toggle="modal" data-target="#modal_simpanan_bayar"><i class="fa fa-check"></i> Bayar</a>
@@ -63,6 +65,14 @@
         </table>
     </div>
 </div>
+@push('after-scripts')
+    <script>
+        Livewire.on('close-modal',()=>{
+            $('.modal').modal('close');
+        });
+    </script>
+@endpush
 
 @livewire('user-member.add-simpanan',['data'=>$member->id])
 @livewire('user-member.simpanan-bayar',['data'=>$member->id])
+@livewire('user-member.setting-simpanan')

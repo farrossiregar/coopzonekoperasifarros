@@ -163,6 +163,7 @@
                                         <div class="btn-group" role="group">
                                             <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-navicon"></i></a>
                                             <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                                <a href="javascript:void(0)" class=""><i class="fa fa-close"></i> Void</a>
                                             </div>
                                         </div>    
                                     </td>

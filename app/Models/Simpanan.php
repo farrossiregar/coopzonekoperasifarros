@@ -10,6 +10,8 @@ class Simpanan extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];  
+
     protected $table = 'simpanan';
 
     public function jenis_simpanan()

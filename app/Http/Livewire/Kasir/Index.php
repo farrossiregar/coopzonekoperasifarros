@@ -14,7 +14,7 @@ class Index extends Component
     public $data=[],$kode_produksi,$qty=1,$sub_total=0,$total=0,$msg_error="",$metode_pembayaran=4,$success=false;
     public $no_transaksi='',$transaksi,$jenis_transaksi=2,$msg_error_jenis_transaksi,$no_anggota,$anggota,$temp_anggota;
     public $status_transaksi=0,$uang_tunai=0,$total_kembali=0,$total_qty=0,$message_metode_pembayaran,$ppn,$total_and_ppn,$no_kartu_debit_kredit;
-    public $user_kasir,$msg_error_anggota,$url_cetak_struk,$data_product=[],$data_anggota=[],$selected_item;
+    public $user_kasir,$msg_error_anggota,$url_cetak_struk,$data_product=[],$data_anggota=[],$selected_item,$edit_stock;
     protected $listeners = ['event_bayar' => 'event_bayar',
                             'okeAnggota'=>'okeAnggota',
                             'deleteAnggota'=>'deleteAnggota',
@@ -45,8 +45,20 @@ class Index extends Component
 
     public function setSelectedItem($key)
     {
-        $this->selected_item = $this->data_product[$key];
-        dd($this->selected_item);
+        $this->selected_item = $this->data[$key];
+        $this->edit_stock = $this->selected_item['qty'];
+    }
+
+    public function updateProduct()
+    {
+        $this->validate([
+            'edit_stock' => 'required'
+        ]);
+
+        if($this->selected_item){
+            $this->data[$this->selected_item['id']]['qty'] = $this->edit_stock;
+        }
+        $this->emit('close-modal');
     }
 
     public function updated($propertyName)
@@ -60,6 +72,7 @@ class Index extends Component
 
         $this->ppn = 0;//$this->total*0.11;
         $this->total_and_ppn = $this->total + $this->ppn;
+        if($this->edit_stock=="") $this->edit_stock = 0;
     }
 
     public function deleteAnggota()
