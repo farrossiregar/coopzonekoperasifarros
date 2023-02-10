@@ -119,7 +119,9 @@
                                 <th class="text-center">Tanggal Pembayaran</th>
                                 <th class="text-right">Nominal</th>
                                 <th class="text-right">PPN</th>
-                                <th class="text-right">Total</th>
+                                <th class="text-right">Total<br />
+                                    <label class="text-info">(Rp {{format_idr($total)}})</label>
+                                </th>
                                 <th></th>
                            </tr>
                         </thead>
