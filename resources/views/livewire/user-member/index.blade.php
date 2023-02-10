@@ -46,7 +46,7 @@
                                 <th colspan="4" class="text-center">Simpanan</th>
                                 <th colspan="4" class="text-center">Pembiayaan</th>
                                 <th rowspan="2" style="background:#35a2b869;text-align:center;">SHU</th>
-                                <th colspan="2" class="text-center">Plafond Pembiayaan</th>
+                                <th colspan="2" class="text-center">Plafond Bayar Nanti</th>
                                 <th rowspan="2">
                                     <img src="{{asset('assets/img/coopay-1.png')}}" style="height:25px;" />
                                 </th>
