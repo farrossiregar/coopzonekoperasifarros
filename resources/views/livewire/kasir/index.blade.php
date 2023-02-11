@@ -7,7 +7,6 @@
                     <div class="col-md-5">
                         <div wire:ignore>
                             <label>KODE PRODUKSI / BARCODE <code>(ALT+Q)</code></label>
-                            <!-- <input type="text" class="form-control" id="barcode" wire:model="kode_produksi" wire:keydown.enter="getProduct" placeholder="BARCODE" /> -->
                             <select class="form-control" id="barcode">
                                 <option value=""> -- BARCODE -- </option>
                             </select>
@@ -28,7 +27,7 @@
                     </div>
                 </div>
                 <div class="table-responsive">
-                    <table class="table center-aligned-table table-bordered" id="table_product">
+                    <table class="table center-aligned-table table-bordered table-hovered" id="table_product">
                         <thead>
                             <tr style="background:#16a3b8;color:white;">
                                 <th class="text-center">NO</th>
@@ -49,14 +48,14 @@
                         @php($num=1)
                         <tbody>
                             @foreach($data as $k => $item)
-                                <tr tabindex="0">
-                                    <td class="text-center" onkeypress="alert(0)">{{$num}}@php($num++)</td>
-                                    <td>{{$item['kode_produksi']}}</td>
-                                    <td>{{$item['keterangan']}}</td>
-                                    <td class="text-right">{{format_idr($item['harga_jual'])}}</td>
-                                    <td class="text-center">{{$item['qty']}}</td>
-                                    <td class="text-center">{{$item['stock']}}</td>
-                                    <td class="text-right">{{format_idr($item['harga_jual'] * $item['qty']);}}</td>
+                                <tr tabindex="0" title="Klik untuk merubah QTY" style="cursor:pointer;">
+                                    <td class="text-center" onkeypress="alert(0)" wire:click="$emit('edit_item',{{$k}})">{{$num}}@php($num++)</td>
+                                    <td wire:click="$emit('edit_item',{{$k}})">{{$item['kode_produksi']}}</td>
+                                    <td wire:click="$emit('edit_item',{{$k}})">{{$item['keterangan']}}</td>
+                                    <td wire:click="$emit('edit_item',{{$k}})" class="text-right">{{format_idr($item['harga_jual'])}}</td>
+                                    <td wire:click="$emit('edit_item',{{$k}})" class="text-center">{{$item['qty']}}</td>
+                                    <td wire:click="$emit('edit_item',{{$k}})" class="text-center">{{$item['stock']}}</td>
+                                    <td wire:click="$emit('edit_item',{{$k}})" class="text-right">{{format_idr($item['harga_jual'] * $item['qty']);}}</td>
                                     <td class="text-center">
                                         <a href="javascript:void(0)" class="btn btn-danger" wire:click="delete({{$k}})" title="Hapus"><i class="fa fa-close"></i></a>
                                     </td>
@@ -68,7 +67,6 @@
             </div>
         </div>
     </div>
-
     <div class="col-md-4">
         <div class="card">
             <div class="body">
@@ -123,9 +121,9 @@
                                 <span class="sr-only">{{ __('Loading...') }}</span>
                             </span>
                             <div class="col-7 pr-0">
-                                <a href="javascript:voi(0)" data-toggle="modal" data-target="#modal_pembayaran" id="btn_bayar" wire:loading.remove wire:target="bayar,cancel_transaction" class="btn btn-info btn-lg col-12" style=""><i class="fa fa-check-circle"></i> <span>BAYAR <code>(ALT+A)</code></span></a>
+                                <a href="javascript:voi(0)" data-toggle="modal" data-target="#modal_pembayaran" wire:click="$emit('modal_bayar',true)" id="btn_bayar" wire:loading.remove wire:target="bayar,cancel_transaction" class="btn btn-info btn-lg col-12" style=""><i class="fa fa-check-circle"></i> <span>BAYAR <code>(ALT+A)</code></span></a>
                             </div>
-                            <div class="col-5 pr-0">
+                            <div class="col-5">
                                 <a href="javascript:void(0)" wire:click="cancel_transaction" wire:loading.remove wire:target="bayar,cancel_transaction" class="btn btn-danger btn-lg col-12" id="btn_batalkan"><i class="fa fa-close"></i> BATAL <code>(ALT+S)</code></a>
                             </div>
                         </div>
@@ -143,6 +141,9 @@
             font-size:16px;
         }
         .table_total tr th,.table_total tr td {padding-top:10px;padding-bottom:10px;}
+        .table .active_item {
+                border: 3px solid #16a3b8
+            }
     </style>
     <div wire:ignore.self class="modal fade" id="modal_pembayaran" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -188,7 +189,7 @@
                                                     <td colspan="2">
                                                         <div class="mt-2"> 
                                                             <strong>UANG TUNAI</strong>
-                                                            <input type="text" class="form-control text-right format_price" wire:model="uang_tunai" style="font-size:20px;" />
+                                                            <input type="text" class="form-control text-right format_price_uang_tunai" wire:model="uang_tunai" style="font-size:20px;" />
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -209,7 +210,7 @@
                                                 <tr>
                                                     <td colspan="2" class="text-center">
                                                         <div wire:loading.remove wire:target="event_bayar">
-                                                            <label>Gunakan Aplikasi Coopay dan Scan disini</label>
+                                                            <label>Gunakan Aplikasi CoopZone dan Scan disini</label>
                                                             {!! QrCode::size(200)->generate(get_setting('no_koperasi')); !!}
                                                         </div>
                                                         <span wire:loading wire:target="event_bayar">
@@ -223,7 +224,7 @@
                                                 <tr>
                                                     <th colspan="2" class="text-center">
                                                         <div wire:loading.remove wire:target="event_bayar">
-                                                            <label>Gunakan Aplikasi Coopay dan Scan disini</label>
+                                                            <label>Gunakan Aplikasi CoopZone dan Scan disini</label>
                                                             {!! QrCode::size(200)->generate(get_setting('no_koperasi')); !!}
                                                         </div>
                                                         <span wire:loading wire:target="event_bayar">
@@ -272,13 +273,61 @@
         </div>
     </div>
 
+
+    <div wire:ignore.self class="modal fade" id="modal_edit_item" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content modal-sm">
+                <form wire:submit.prevent="updateProduct">
+                    <div class="modal-body">
+                        <div class="form-group mb-0">
+                            <small>KODE PRODUKSI / BARCODE</small><br />
+                            <span>{{isset($selected_item) ? $selected_item['kode_produksi'] : '-'}}</span>
+                        </div>
+                        <hr class="pt-0 mt-0" />
+                        <div class="form-group mb-0">
+                            <small>PRODUK</small><br />
+                            <span>{{isset($selected_item) ? $selected_item['keterangan'] : '-'}}</span>
+                        </div>
+                        <hr class="pt-0 mt-0" />
+                        <div class="form-group mb-0">
+                            <small>HARGA</small><br />
+                            <span>{{isset($selected_item) ? format_idr($selected_item['harga_jual']) : '-'}}</span>
+                        </div>
+                        <hr class="pt-0 mt-0" />
+                        <div class="form-group mb-0">
+                            <small>QTY</small>
+                            <input type="number" class="form-control" id="edit_stock" wire:model="edit_stock" />
+                        </div>
+                        <hr class="pt-0 mt-0" />
+                        <div class="form-group mb-0">
+                            <small>SISA STOK</small><br />
+                            <span>{{isset($selected_item) ? $selected_item['stock'] : '-'}}</span>
+                        </div>
+                        <hr class="pt-0 mt-0" />
+                        <div class="form-group mb-0">
+                            <small>TOTAL</small>
+                            <label>{{isset($selected_item) ? format_idr($selected_item['harga_jual'] * $edit_stock) : 0}}</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <span wire:loading wire:target="getProduct">
+                            <i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
+                            <span class="sr-only">{{ __('Loading...') }}</span>
+                        </span>
+                        <button wire:loading.remove wire:target="updateProduct" type="submit" class="btn btn-info col-12 btn-lg"><i class="fa fa-save"></i> Simpan </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div wire:ignore.self class="modal fade" id="modal_input_anggota" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <form wire:submit.prevent="setAnggota">
                     <div class="modal-body">
                         <div class="form-group">
-                            <label>ANGGOTA (T)</label>
+                            <label>ANGGOTA <code>(ALT+T)</code></label>
                             <div wire:ignore>
                                 <select class="form-control" id="anggota">
                                     <option value=""> -- ANGGOTA -- </option>
@@ -319,10 +368,10 @@
                             <span class="sr-only">{{ __('Loading...') }}</span>
                         </span>
                         @if($temp_anggota)
-                            <a href="javascript:void(0)" wire:loading.remove wire:target="setAnggota" wire:click="okeAnggota" id="btn_find_anggota_oke" class="btn btn-success col-9 btn-lg"><i class="fa fa-check-circle"></i> Oke (U)</a>
-                            <a href="javascript:void(0)" wire:loading.remove wire:target="setAnggota" wire:click="deleteAnggota" id="btn_find_anggota_hapus" class="btn btn-danger col-3 btn-lg"><i class="fa fa-times"></i> Hapus (I)</a>
+                            <a href="javascript:void(0)" wire:loading.remove wire:target="setAnggota" wire:click="okeAnggota" id="btn_find_anggota_oke" class="btn btn-success col-9 btn-lg"><i class="fa fa-check-circle"></i> Oke <code>(ALT+U)</code></a>
+                            <a href="javascript:void(0)" wire:loading.remove wire:target="setAnggota" wire:click="deleteAnggota" id="btn_find_anggota_hapus" class="btn btn-danger col-3 btn-lg"><i class="fa fa-times"></i> Hapus <code>(ALT+I)</code></a>
                         @else
-                            <button wire:loading.remove wire:target="setAnggota" type="submit" id="btn_find_anggota" class="btn btn-warning col-12 btn-lg"><i class="fa fa-search-plus"></i> FIND (Y)</button>
+                            <button wire:loading.remove wire:target="setAnggota" type="submit" id="btn_find_anggota" class="btn btn-warning col-12 btn-lg"><i class="fa fa-search-plus"></i> FIND <code>(ALT+Y)</code></button>
                         @endif
                     </div>
                 </form>
@@ -349,6 +398,7 @@
     @push('after-scripts')
         <link rel="stylesheet" href="{{ asset('assets/vendor/select2/css/select2.min.css') }}"/>
         <script src="{{ asset('assets/vendor/select2/js/select2.min.js') }}"></script>
+        <script src="{{ asset('assets/js/jquery.priceformat.min.js') }}"></script>
         <style>
             .select2-container .select2-selection--single {height:36px;padding-left:10px;}
             .select2-container .select2-selection--single .select2-selection__rendered{padding-top:1px;}
@@ -356,34 +406,42 @@
             .select2-container {width: 100% !important;}
         </style>
         <script>
+            var modal_bayar = false;
             var select_barcode = $('#barcode').select2({
                     placeholder: " -- BARCODE -- ",
                     data : {!!json_encode($data_product)!!}
-                    // ajax: {
-                    //     dataType: 'json',
-                    //     url: '{{route('api.product.data')}}',
-                    //     data: function (params) {
-                    //         var query = {
-                    //             search: params.term
-                    //         }
-                    //         return query;
-                    //     },
-                    //     processResults: function (data) {
-                    //         console.log(data);
-                    //         return {
-                    //             results: data.items
-                    //         };
-                    //     }
-                    // }
                 }
             );
 
             $('#barcode').on('change', function (e) {
                 var data = $(this).select2("val");
-                // @this.set('kode_produksi', data);
                 Livewire.emit('getProduct',data);
             });
 
+            Livewire.on('close-modal',()=>{
+                $(".modal").modal('hide');
+            })
+
+            Livewire.on('edit_item',(id)=>{
+                $("#modal_edit_item").modal("show");
+                setTimeout(function(){
+                    $("#edit_stock").focus();
+                },1000);
+            });
+
+            Livewire.on('modal_bayar',(val)=>{
+                modal_bayar = val;
+                if(val){
+                    setTimeout(function(){
+                        $(".format_price_uang_tunai").priceFormat({
+                            prefix: '',
+                            centsSeparator: '.',
+                            thousandsSeparator: '.',
+                            centsLimit: 0
+                        });
+                    },1000);
+                }
+            });
             Livewire.on('clear-barcode',()=>{
                 $('#barcode').val("").trigger('change');
             });
@@ -391,29 +449,12 @@
             var select_anggota = $('#anggota').select2({
                     placeholder: " -- ANGGOTA -- ",
                     data : {!!json_encode($data_anggota)!!}
-                    // ajax: {
-                    //     dataType: 'json',
-                    //     url: '{{route('api.anggota.data')}}',
-                    //     data: function (params) {
-                    //         var query = {
-                    //             search: params.term
-                    //         }
-                    //         return query;
-                    //     },
-                    //     processResults: function (data) {
-                    //         return {
-                    //             results: data.items
-                    //         };
-                    //     }
-                    // }
                 }
             );
             $('#anggota').on('change', function (e) {
                 var data = $(this).select2("val");
-                // @this.set('no_anggota', data);
                 Livewire.emit('setAnggota',data);
             });
-
 
             // on first focus (bubbles up to document), open the menu
             $(document).on('focus', '.select2-selection.select2-selection--single', function (e) {
@@ -426,12 +467,8 @@
                     e.stopPropagation();
                 }); 
             });
-        </script>
-        <script src="{{ asset('assets/js/jquery.priceformat.min.js') }}"></script>
-        <script>
-
             document.addEventListener("keydown", onKeyPressed);
-            
+    
             function onKeyPressed(e) {
                 if(e.which==13){
                     console.log(document.activeElement);
@@ -451,7 +488,7 @@
                         $("#btn_input_anggota").trigger('click');
                     }
                     if(e.which==84){ // T
-                        $("#no_anggota").focus();
+                        $("#anggota").select2("open");
                     }
                     if(e.which==89){ // T
                         $("#btn_find_anggota").trigger('click');
@@ -467,13 +504,15 @@
                     }
                 }
             }
-           
+            
 
-            $('.format_price').priceFormat({
-                prefix: '',
-                centsSeparator: '.',
-                thousandsSeparator: '.',
-                centsLimit: 0
+            $('.format_price').each(function(i, obj) {
+                $(this).priceFormat({
+                    prefix: '',
+                    centsSeparator: '.',
+                    thousandsSeparator: '.',
+                    centsLimit: 0
+                });
             });
             
             var transaction_id;

@@ -18,7 +18,7 @@ class Upload extends Component
 
     public function save()
     {
-        set_time_limit(50000); // 
+        ini_set('memory_limit', '-1');
         $this->validate([
             'file'=>'required|mimes:xls,xlsx|max:51200' // 50MB maksimal
         ]);
@@ -33,21 +33,20 @@ class Upload extends Component
             $countLimit = 1;
             foreach($sheetData as $key => $i){
                 if($key<=1) continue; // skip header
-            
+                
                 $kategori = $i[1];
                 $barcode = $i[2];
                 $produk = $i[3];
-                $price = $i[4];
+                $qty = $i[4];
                 $uom = $i[5];
-                $qty = $i[6];
-
-                $product = Product::where('kode_produksi',$barcode)->first();
+                $price = format_idr($i[6]);
+                $product = Product::where('keterangan',$produk)->first();
                 if(!$product){
                     $product = new Product();
                     $product->is_migrate = 1;
                 }
-
-                $product->kode_produksi = $barcode;
+                $product->item_code = $barcode;
+                
                 if($kategori=='KONSINYASI'){
                     $product->type ='Konsinyasi';
                 }else{

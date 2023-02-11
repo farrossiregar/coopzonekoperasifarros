@@ -52,7 +52,20 @@
     <script>
         var verifyCallback = function(response) {
             @this.set('token', response);
+<<<<<<< HEAD
             $("#btn_submit").trigger('click');
         };
     </script> -->
+=======
+            $("#btn_submit").trigger('click'); 
+        };        
+    </script>
+    @push('after-scripts')
+        <script>
+            Livewire.on('reload-captcha',()=>{
+                grecaptcha.reset();
+            })
+        </script>
+    @endpush
+>>>>>>> fa5bd5e70637337c69311130859148ac1f358808
 </div>

@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Product;
 use Livewire\Component;
 use App\Models\Product;
 use App\Models\ProductStock;
+use App\Models\TransaksiItem;
 
 class FormPembelian extends Component
 {
@@ -60,8 +61,8 @@ class FormPembelian extends Component
         $data->save();
 
         $stock = ProductStock::where('product_id',$this->product->id)->get()->sum('qty');
-        $qty_moving = TransaksiItem::join('transaksi','transaksi.id','=','transaksi_item.transaksi_id')
-                            ->where('transaksi_item.product_id',$this->product->id)
+        $qty_moving = TransaksiItem::join('transaksi','transaksi.id','=','transaksi_items.transaksi_id')
+                            ->where('transaksi_items.product_id',$this->product->id)
                             ->where('transaksi.status',1)
                             ->where('transaksi.is_temp',0)->get()->sum('qty_moving');
 

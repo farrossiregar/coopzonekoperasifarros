@@ -8,17 +8,20 @@ use App\Models\Transaksi;
 use App\Models\TransaksiItem;
 use App\Models\UserMember;
 use App\Models\UserKasir;
+use App\Jobs\SyncCoopzone;
 
 class Index extends Component
 {    
     public $data=[],$kode_produksi,$qty=1,$sub_total=0,$total=0,$msg_error="",$metode_pembayaran=4,$success=false;
     public $no_transaksi='',$transaksi,$jenis_transaksi=2,$msg_error_jenis_transaksi,$no_anggota,$anggota,$temp_anggota;
     public $status_transaksi=0,$uang_tunai=0,$total_kembali=0,$total_qty=0,$message_metode_pembayaran,$ppn,$total_and_ppn,$no_kartu_debit_kredit;
-    public $user_kasir,$msg_error_anggota,$url_cetak_struk,$data_product=[],$data_anggota=[];
+    public $user_kasir,$msg_error_anggota,$url_cetak_struk,$data_product=[],$data_anggota=[],$selected_item,$edit_stock;
     protected $listeners = ['event_bayar' => 'event_bayar',
                             'okeAnggota'=>'okeAnggota',
                             'deleteAnggota'=>'deleteAnggota',
-                            'getProduct'=>'getProduct'];
+                            'getProduct'=>'getProduct',
+                            'setAnggota'=>'setAnggota',
+                            'edit_item'=>'setSelectedItem'];
     public function render()
     {
         return view('livewire.kasir.index')->layout('layouts.kasir');
@@ -41,6 +44,24 @@ class Index extends Component
         }
     }
 
+    public function setSelectedItem($key)
+    {
+        $this->selected_item = $this->data[$key];
+        $this->edit_stock = $this->selected_item['qty'];
+    }
+
+    public function updateProduct()
+    {
+        $this->validate([
+            'edit_stock' => 'required'
+        ]);
+
+        if($this->selected_item){
+            $this->data[$this->selected_item['id']]['qty'] = $this->edit_stock;
+        }
+        $this->emit('close-modal');
+    }
+
     public function updated($propertyName)
     {
         if($propertyName=='uang_tunai'){
@@ -52,6 +73,7 @@ class Index extends Component
 
         $this->ppn = 0;//$this->total*0.11;
         $this->total_and_ppn = $this->total + $this->ppn;
+        if($this->edit_stock=="") $this->edit_stock = 0;
     }
 
     public function deleteAnggota()
@@ -59,8 +81,9 @@ class Index extends Component
         $this->reset('anggota','no_anggota','temp_anggota');
     }
 
-    public function setAnggota()
+    public function setAnggota($no_anggota='')
     {
+        if($no_anggota) $this->no_anggota = $no_anggota;
         $this->validate([
             'no_anggota'=>'required'
         ]);
@@ -120,13 +143,15 @@ class Index extends Component
             }else{
                 $this->anggota->plafond_digunakan = $this->anggota->plafond_digunakan + $this->total_and_ppn;
                 $this->anggota->save();
-                // Sinkron Coopzone
-                $response = sinkronCoopzone([
-                    'url'=>'koperasi/user/edit',
-                    'field'=>'plafond_digunakan',
-                    'value'=>$this->anggota->plafond_digunakan,
-                    'no_anggota'=>$this->anggota->no_anggota_platinum
-                ]);
+
+                SyncCoopzone::dispatch(
+                    [
+                        'url'=>'koperasi/user/edit',
+                        'field'=>'plafond_digunakan',
+                        'value'=>$this->anggota->plafond_digunakan,
+                        'no_anggota'=>$this->anggota->no_anggota_platinum
+                    ]
+                );
             }   
         }
 
@@ -142,26 +167,35 @@ class Index extends Component
                 $this->anggota->simpanan_ku = $this->anggota->simpanan_ku - $this->total_and_ppn;
                 $this->anggota->save();
                 // Sinkron Coopzone
-                $response = sinkronCoopzone([
-                    'url'=>'koperasi/user/edit',
-                    'field'=>'simpanan_ku',
-                    'value'=>$this->anggota->simpanan_ku,
-                    'no_anggota'=>$this->anggota->no_anggota_platinum
-                ]);
+                SyncCoopzone::dispatch(
+                    [
+                        'url'=>'koperasi/user/edit',
+                        'field'=>'simpanan_ku',
+                        'value'=>$this->anggota->simpanan_ku,
+                        'no_anggota'=>$this->anggota->no_anggota_platinum
+                    ]
+                );
             }
         }
         
         if($this->jenis_transaksi==1){
             // Sinkron Coopzone
-            $response = sinkronCoopzone([
-                'url'=>'koperasi/notifikasi/store',
-                'no_anggota'=>$this->anggota->no_anggota_platinum,
-                'message'=>"Kamu telah melakukan transaksi sebesar Rp. ".format_idr($this->total_and_ppn).' di '.get_setting('company'),
-                'title'=>'Transaksi #'.$this->transaksi->no_transaksi.' berhasil'
-            ]);
+            SyncCoopzone::dispatch(
+                [
+                    'url'=>'koperasi/notifikasi/store',
+                    'no_anggota'=>$this->anggota->no_anggota_platinum,
+                    'message'=>"Kamu telah melakukan transaksi sebesar Rp. ".format_idr($this->total_and_ppn).' di '.get_setting('company'),
+                    'title'=>'Transaksi #'.$this->transaksi->no_transaksi.' berhasil'
+                ]
+            );
         }
 
-        if($this->anggota) $this->transaksi->user_member_id = $this->anggota->id;
+        if($this->anggota) {
+            $this->transaksi->user_member_id = $this->anggota->id;
+            $this->transaksi->jenis_transaksi = 1;
+        }else{
+            $this->transaksi->jenis_transaksi = 2;
+        }
         
         // kurangin stock
         foreach($this->transaksi->items as $item){
@@ -183,7 +217,18 @@ class Index extends Component
 
         $this->data = [];$this->total=0;$this->sub_total=0;$this->success = true;
         $this->status_transaksi=0;
-        $this->reset('transaksi','anggota','uang_tunai');
+        $this->reset_transaksi();
+    }
+
+    public function reset_transaksi()
+    {
+        $this->uang_tunai = 0;$this->total_kembali = 0;$this->total_qty = 0;
+        $this->ppn = 0;$this->total_and_ppn = 0;
+        $this->reset('transaksi',
+                    'anggota',
+                    'uang_tunai',
+                    'temp_anggota',
+                    'no_kartu_debit_kredit');
     }
 
     public function cetakStruk()
@@ -261,9 +306,12 @@ class Index extends Component
 
     public function cancel_transaction()
     {
-        $this->transaksi->delete();
-        $this->data = [];$this->total=0;$this->sub_total=0;
-        $this->status_transaksi=0;
+        $this->transaksi->status = 2;
+        $this->transaksi->is_temp = 0;
+        $this->transaksi->save(); $this->reset('transaksi');
+        $this->data = [];$this->total = 0;$this->sub_total = 0;
+        $this->status_transaksi = 0;
+        $this->reset_transaksi();
     }
 
     public function start_transaction()
@@ -284,7 +332,7 @@ class Index extends Component
         $data->save();
 
         $this->emit('set_transaction_id',$data->no_transaksi);
-        $this->status_transaksi=1;
+        $this->status_transaksi = 1;
         $this->transaksi = $data;
     }
 }

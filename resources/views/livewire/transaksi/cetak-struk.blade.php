@@ -111,7 +111,7 @@
     dapatkan penawaran seru!<br />
     di google play/apps store</p>
     <p style="text-align:center">
-        <img src="{{$data->id}}.png" style="width:60px;" />
+        <img src="qrcode/{{$data->id}}.png" style="width:60px;" />
     </p>
 </body>
 </html>

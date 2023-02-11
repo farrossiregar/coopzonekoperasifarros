@@ -9,9 +9,8 @@
                 <div class="col-md-2 px-0">
                     <select class="form-control" wire:model="status">
                         <option value=""> --- Status --- </option>
-                        <option value="1">Inactive</option>
-                        <option value="2">Active</option>
-                        <option value="5">Keluar</option>
+                        <option value="1">Aktif</option>
+                        <option value="4">Resign</option>
                     </select>
                 </div>
                 <div class="col-md-6">
@@ -35,6 +34,7 @@
                         <thead style="background: #eee;">
                             <tr>
                                 <th rowspan="2">No</th>
+                                <th rowspan="2" class="text-center">Status</th>
                                 <th rowspan="2">No Anggota</th>
                                 <th rowspan="2">Nama</th>                                 
                                 <th rowspan="2">No Telepon</th>
@@ -46,7 +46,7 @@
                                 <th colspan="4" class="text-center">Simpanan</th>
                                 <th colspan="4" class="text-center">Pembiayaan</th>
                                 <th rowspan="2" style="background:#35a2b869;text-align:center;">SHU</th>
-                                <th colspan="2" class="text-center">Plafond Pembiayaan</th>
+                                <th colspan="2" class="text-center">Plafond Bayar Nanti</th>
                                 <th rowspan="2">
                                     <img src="{{asset('assets/img/coopay-1.png')}}" style="height:25px;" />
                                 </th>
@@ -92,6 +92,13 @@
                             @foreach($data as $k => $item)
                             <tr>
                                 <td style="width: 50px;">{{$number}}</td>
+                                <td class="text-center">
+                                    @if($item->status==4)
+                                        <span class="badge badge-danger">Resign</span>
+                                    @else
+                                        <span class="badge badge-success">Aktif</span>
+                                    @endif
+                                </td>
                                 <td><a href="{{route('user-member.edit',['id'=>$item->id])}}" class="{{$item->status==4?"text-danger" : ""}}">{{$item->no_anggota_platinum?$item->no_anggota_platinum:'-'}}</a></td>
                                 <td>@livewire('user-member.editable',['field'=>'name','data'=>$item->name,'id'=>$item->id],key('name'.$item->id))</td>
                                 <td>@livewire('user-member.editable',['field'=>'phone_number','data'=>$item->phone_number,'id'=>$item->id],key('phone_number'.$item->id))</td>
@@ -117,8 +124,9 @@
                                         <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-navicon"></i></a>
                                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                                             <a class="dropdown-item" href="{{route('user-member.edit',['id'=>$item->id])}}"><i class="fa fa-search-plus"></i> Detail</a>
-                                            <a class="dropdown-item text-danger" href="javascript:void(0)" wire:click="delete({{$item->id}})"><i class="fa fa-trash"></i> Hapus</a>
+                                            <!-- <a class="dropdown-item text-danger" href="javascript:void(0)" wire:click="delete({{$item->id}})"><i class="fa fa-trash"></i> Hapus</a> -->
                                             <a class="dropdown-item" href="javascript:void(0)" wire:click="set_member({{$item->id}})" data-toggle="modal" data-target="#modal_set_password"><i class="fa fa-key"></i> Set Password</a>
+                                            <a class="dropdown-item" href="javascript:void(0)" wire:click="$emit('set-resign',{{$item->id}})"><i class="fa fa-minus"></i> Set Resign</a>
                                         </div>
                                     </div>    
                                 </td>
@@ -159,6 +167,38 @@
             </div>
         </div>
     </div>
+
+    <div wire:ignore.self class="modal fade" id="modal_set_resign" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form wire:submit.prevent="changeResign">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-sign-in"></i> Atur Resign</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true close-btn">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body row">
+                        <div class="form-group col-md-7">
+                            <label>Alasan Resign</label>
+                            <input type="text" class="form-control" wire:model="alasan_resign" />
+                            @error('alasan') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="form-group col-md-5">
+                            <label>Tanggal Resign</label>
+                            <input type="date" class="form-control" wire:model="tanggal_resign" />
+                            @error('tanggal_resign') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger close-modal">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
 </div>
 
 
@@ -238,14 +278,17 @@
     </div>
 </div>
 @push('after-scripts')
-<script>
-    Livewire.on('modal-konfirmasi-meninggal',(data)=>{
-        $("#modal_konfirmasi_meninggal").modal("show");
-    });
-    Livewire.on('modal-detail-meninggal',(data)=>{
-        $("#modal_detail_meninggal").modal("show");
-    });
-</script>
+    <script>
+        Livewire.on('set-resign',(id)=>{
+            $("#modal_set_resign").modal("show");
+        })
+        Livewire.on('modal-konfirmasi-meninggal',(data)=>{
+            $("#modal_konfirmasi_meninggal").modal("show");
+        });
+        Livewire.on('modal-detail-meninggal',(data)=>{
+            $("#modal_detail_meninggal").modal("show");
+        });
+    </script>
 @endpush
 @section('page-script')
 function autologin(action,name){

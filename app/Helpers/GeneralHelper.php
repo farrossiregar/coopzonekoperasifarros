@@ -93,6 +93,9 @@ function status_transaksi($status){
         case 3:
           return "<span class=\"badge badge-danger\">Gagal</span>"; 
           break;
+        case 4:
+            return "<span class=\"badge badge-danger\">Void</span>"; 
+            break;
         default:
             return "<span class=\"badge badge-warning\">Batal</span>"; 
         break;

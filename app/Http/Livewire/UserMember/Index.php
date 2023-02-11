@@ -12,9 +12,10 @@ class Index extends Component
 {
     public $keyword,$koordinator_id,$status;
     use WithPagination;
-    protected $paginationTheme = 'bootstrap';
+    protected $paginationTheme = 'bootstrap',$listeners = ['set-resign'=>'setResign'];
     public $dataMember,$selected,$password,$insert=false;
     public $no_anggota,$error_no_anggota,$nama,$no_telepon;
+    public $tanggal_resign,$alasan_resign,$selected_item;
     public function render()
     {
         $data = UserMember::select('user_member.*')->join('users','users.id','=','user_member.user_id')
@@ -34,6 +35,21 @@ class Index extends Component
         return view('livewire.user-member.index')
                 ->layout('layouts.app')
                 ->with(['data'=>$data->paginate(100)]);
+    }
+
+    public function setResign(UserMember $id)
+    {
+        $this->selected_item = $id;
+    }
+
+    public function changeResign()
+    {
+        $this->selected_item->status = 4;
+        $this->selected_item->alasan_resign = $this->alasan_resign;
+        $this->selected_item->tanggal_resign = $this->tanggal_resign;
+        $this->selected_item->save();
+        $this->emit('message-success',"Data anggota berhasil disubmit");
+        $this->emit('close-modal');
     }
 
     public function changePassword()

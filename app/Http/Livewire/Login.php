@@ -40,9 +40,12 @@ class Login extends Component
         // $response = Http::post('https://www.google.com/recaptcha/api/siteverify?secret='.env('CAPTCHA_SITE_SECRET').'&response='. $this->token);
         // $response = $response->json();
         
-        // if (!$response['success']) {
-        //     $this->message = 'Google thinks you are a bot, please refresh and try again';
-        // }else{
+
+        if (!$response['success']) {
+            $this->emit('reload-captcha');
+            $this->message = 'Google thinks you are a bot, please refresh and try again';
+        }else{
+
             if (Auth::attempt($credentials,$this->remember_me)) {
                 // Authentication passed...
                 return redirect('/user-member');

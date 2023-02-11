@@ -35,7 +35,14 @@
                     <tr>
                         <th>Status Transaksi</th>
                         <td style="width:20px"> : </td>
-                        <td>{!!status_transaksi($data->status)!!}</td>
+                        <td>
+                            {!!status_transaksi($data->status)!!}<br />
+                            @if($data->status==4)
+                               <code>
+                                {{date('d-M-Y',strtotime($data->void_date))}} - {{$data->void_alasan}}
+                               </code>
+                            @endif
+                        </td>
                     </tr>
                     <tr>
                         <th>Status Pembayaran</th>
