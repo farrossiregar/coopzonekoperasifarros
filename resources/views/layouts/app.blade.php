@@ -67,6 +67,16 @@
                                 <i class="fa fa-times-circle"></i>  {{session('message-error')}}
                             </div>
                         @endif
+                        <div class="alert alert-danger alert-dismissible" role="alert" style="display:none">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            <i class="fa fa-times-circle"></i> <span class="message"></span>
+                        </div>
+                        <div class="alert alert-success alert-dismissible" role="alert" style="display:none">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            <i class="fa fa-check-circle"></i> <span class="message"></span>
+                        </div>
                         <!-- @if (trim($__env->yieldContent('title')))
                         <div class="row">
                                 <div class="col-lg-5 col-md-8 col-sm-12">                        
@@ -105,6 +115,21 @@
             {{ csrf_field() }}
         </form>
         <script>
+            Livewire.on('message-success', (msg) => {
+                $('.alert-success').show();
+                $('.alert-success .message').html(msg);
+                $('html, body').animate({
+                    scrollTop: $("#wrapper").offset().top
+                }, 0);
+            });
+            Livewire.on('message-error', (msg) => {
+                $('.alert-error').show();
+                $('.alert-error .message').html(msg);
+                $('html, body').animate({
+                    scrollTop: $("#wrapper").offset().top
+                }, 0);
+            });
+            
             Livewire.on('error-message',(msg)=>{
                 alert(msg);
             });

@@ -28,6 +28,7 @@
                            <tr>
                                 <th>No</th>
                                 <th class="text-center">Status</th>
+                                <th class="text-center">Type</th>
                                 <th>Kode Produksi / Barcode</th>
                                 <th>Produk</th>
                                 <th>UOM</th>
@@ -58,10 +59,11 @@
                                             <span class="badge badge-default">Tidak Aktif</span>
                                         @endif
                                     </td>
+                                    <td class="text-center">{{$item->type}}</td>
                                     <td>@livewire('product.editable',['field'=>'kode_produksi','data'=>$item->kode_produksi,'id'=>$item->id],key('kode_produksi'.$item->id))</td>
                                     <td><a href="{{route('product.detail',$item->id)}}">{{$item->keterangan}}</a></td>
                                     <td>@livewire('product.editable',['field'=>'product_uom_id','data'=>(isset($item->uom->name) ? $item->uom->name : ''),'id'=>$item->id],key('uom'.$item->id))</td>
-                                    <td>@livewire('product.editable',['field'=>'qty','data'=>$item->qty,'id'=>$item->id],key('qty'.$item->id))</td>
+                                    <td class="text-center">@livewire('product.editable',['field'=>'qty','data'=>$item->qty,'id'=>$item->id],key('qty'.$item->id))</td>
                                     <td class="text-center">{{$item->qty_moving}}</td>
                                     <td class="text-center" style="background: {{$bg_minimum_stok}}">
                                         @livewire('product.editable',['field'=>'minimum_stok','data'=>$item->minimum_stok,'id'=>$item->id],key('minimum_stok'.$item->id))</td>

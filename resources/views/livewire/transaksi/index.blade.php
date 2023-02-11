@@ -69,6 +69,7 @@
                                         <option value="1"> Sukses</option>
                                         <option value="2"> Batal</option>
                                         <option value="3"> Gagal</option>
+                                        <option value="4"> Void</option>
                                     </select>
                                 </div>
                                 <div class="from-group my-2">
@@ -150,22 +151,15 @@
                                         @endif
                                     </td>
                                     <td class="text-center">{{$item->payment_date ? date('d-M-Y',strtotime($item->payment_date)) : '-'}}</td>
-                                    <td class="text-right">
-                                        <!-- @if($item->type_amount==0)
-                                            <span class="text-success" title="In"><i class="fa fa-arrow-down"></i></span>
-                                        @endif
-                                        @if($item->type_amount==1)
-                                            <span class="text-danger" title="Out"><i class="fa fa-arrow-up"></i></span>
-                                        @endif -->
-                                        {{format_idr($item->amount - ($item->amount * 0.11))}}
-                                    </td>
+                                    <td class="text-right">{{format_idr($item->amount - ($item->amount * 0.11))}}</td>
                                     <td class="text-right">{{format_idr($item->amount * 0.11)}}</td>
                                     <td class="text-right">{{format_idr($item->amount)}}</td>
                                     <td>
                                         <div class="btn-group" role="group">
                                             <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-navicon"></i></a>
                                             <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                                <a href="javascript:void(0)" class=""><i class="fa fa-close"></i> Void</a>
+                                                <a href="javascript:void(0)" wire:click="$emit('void',{{$item->id}})" class="dropdown-item text-danger"><i class="fa fa-close"></i> Void</a>
+                                                <a href="{{route('transaksi.items',$item->id)}}" class="dropdown-item"><i class="fa fa-info"></i> Detail</a>
                                             </div>
                                         </div>    
                                     </td>
@@ -205,6 +199,32 @@
             </div>
         </div>
     </div>
+
+    <div wire:ignore.self class="modal fade" id="modal_void" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form wire:submit.prevent="voidTransaksi">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-sign-in"></i> Void Transaksi</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true close-btn">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Alasan</label>
+                            <input type="text" class="form-control" wire:model="alasan" />
+                            @error('alasan') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger close-modal">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 
@@ -264,6 +284,9 @@
     <script type="text/javascript" src="{{ asset('assets/vendor/daterange/daterangepicker.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/daterange/daterangepicker.css') }}" />
     <script>
+        Livewire.on('void',(id)=>{
+            $("#modal_void").modal('show');
+        });
         $('.tanggal_transaksi').daterangepicker({
             opens: 'left',
             locale: {
