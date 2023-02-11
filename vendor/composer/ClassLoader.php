@@ -42,13 +42,6 @@ namespace Composer\Autoload;
  */
 class ClassLoader
 {
-<<<<<<< HEAD
-=======
-    /** @var \Closure(string):void */
-    private static $includeFile;
-
-    /** @var ?string */
->>>>>>> fa5bd5e70637337c69311130859148ac1f358808
     private $vendorDir;
 
     // PSR-4
@@ -71,7 +64,6 @@ class ClassLoader
     public function __construct($vendorDir = null)
     {
         $this->vendorDir = $vendorDir;
-        self::initializeIncludeClosure();
     }
 
     public function getPrefixes()
@@ -98,13 +90,6 @@ class ClassLoader
         return $this->fallbackDirsPsr4;
     }
 
-<<<<<<< HEAD
-=======
-    /**
-     * @return string[] Array of classname => path
-     * @psalm-return array<string, string>
-     */
->>>>>>> fa5bd5e70637337c69311130859148ac1f358808
     public function getClassMap()
     {
         return $this->classMap;
@@ -358,8 +343,7 @@ class ClassLoader
     public function loadClass($class)
     {
         if ($file = $this->findFile($class)) {
-            $includeFile = self::$includeFile;
-            $includeFile($file);
+            includeFile($file);
 
             return true;
         }
@@ -482,8 +466,8 @@ class ClassLoader
 
         return false;
     }
+}
 
-<<<<<<< HEAD
 /**
  * Scope isolated include.
  *
@@ -492,27 +476,4 @@ class ClassLoader
 function includeFile($file)
 {
     include $file;
-=======
-    /**
-     * @return void
-     */
-    private static function initializeIncludeClosure()
-    {
-        if (self::$includeFile !== null) {
-            return;
-        }
-
-        /**
-         * Scope isolated include.
-         *
-         * Prevents access to $this/self from included files.
-         *
-         * @param  string $file
-         * @return void
-         */
-        self::$includeFile = \Closure::bind(static function($file) {
-            include $file;
-        }, null, null);
-    }
->>>>>>> fa5bd5e70637337c69311130859148ac1f358808
 }

@@ -23,9 +23,7 @@
                                 </ul>
                             </li>
                             <li><a href="{{route('user-member.index')}}" class="text-info icon-menu px-1">Keanggotaan</a></li>
-                            <li><a href="{{route('transaksi.index')}}" class="text-info icon-menu px-1">Transaksi</a></li>
-<<<<<<< HEAD
-                            
+                            <li><a href="{{route('transaksi.index')}}" class="text-info icon-menu px-1">Transaksi</a></li>           
                             <!-- <li class="dropdown">
                                 <a href="#" class="text-info dropdown-toggle icon-menu px-1" data-toggle="dropdown">Inventory</a>
                                 <ul class="dropdown-menu user-menu menu-icon">
@@ -44,9 +42,7 @@
                             </li>
                             <li><a href="{{route('transaksi.index')}}" class="text-info icon-menu px-1">Supplier</a></li>
                             <li><a href="{{route('transaksi.index')}}" class="text-info icon-menu px-1">PO</a></li>
-=======
-                            <li><a href="{{ route('product.index') }}" class="text-info icon-menu px-1">Produk</a></li>
->>>>>>> fa5bd5e70637337c69311130859148ac1f358808
+
                         @endif
                         @if(\Auth::user()->user_access_id==6)
                             <li><a href="{{route('kasir.index')}}" class="text-info icon-menu px-1">Dashboard</a></li>

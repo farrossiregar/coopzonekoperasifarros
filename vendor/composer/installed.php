@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '36d5b52ea6e45b9c6cf5befa8269a5d58456fee3',
+    'reference' => '5fa90b3dc3f5bf006f3e0a83d46dd2b3edd0ce09',
     'name' => 'laravel/laravel',
   ),
   'versions' => 
@@ -225,12 +225,12 @@
     ),
     'firebase/php-jwt' => 
     array (
-      'pretty_version' => 'v6.3.2',
-      'version' => '6.3.2.0',
+      'pretty_version' => 'v6.4.0',
+      'version' => '6.4.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'ea7dda77098b96e666c5ef382452f94841e439cd',
+      'reference' => '4dd1e007f22a927ac77da5a3fbb067b42d3bc224',
     ),
     'fruitcake/laravel-cors' => 
     array (
@@ -580,7 +580,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '36d5b52ea6e45b9c6cf5befa8269a5d58456fee3',
+      'reference' => '5fa90b3dc3f5bf006f3e0a83d46dd2b3edd0ce09',
     ),
     'laravel/passport' => 
     array (
@@ -1110,8 +1110,8 @@
     array (
       'provided' => 
       array (
-        0 => '1.0|2.0',
-        1 => '1.0.0 || 2.0.0 || 3.0.0',
+        0 => '1.0.0 || 2.0.0 || 3.0.0',
+        1 => '1.0|2.0',
       ),
     ),
     'psr/simple-cache' => 
