@@ -90,6 +90,10 @@ Route::group(['middleware' => ['auth','access:1']], function(){
     Route::get('purchase-request/index',App\Http\Livewire\PurchaseRequest\Index::class)->name('purchase-request.index');
     Route::get('purchase-order/index',App\Http\Livewire\PurchaseOrder\Index::class)->name('purchase-order.index');
     Route::get('transaksi/cetak-struk-admin/{data}',[\App\Http\Controllers\TransaksiController::class,'cetakStruk'])->name('transaksi.cetak-struk-admin');
+
+    Route::get('user-supplier', App\Http\Livewire\UserSupplier\Index::class)->name('user-supplier.index');
+    Route::get('user-supplier/insert', App\Http\Livewire\UserSupplier\Insert::class)->name('user-supplier.insert');
+    Route::get('user-supplier/edit/{id}',App\Http\Livewire\UserSupplier\Edit::class)->name('user-supplier.edit');
 });
 
 // Administrator dan Kasir
