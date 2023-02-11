@@ -48,14 +48,14 @@
                         @php($num=1)
                         <tbody>
                             @foreach($data as $k => $item)
-                                <tr tabindex="0" title="Klik untuk merubah QTY" style="cursor:pointer;" wire:click="$emit('edit_item',{{$k}})">
-                                    <td class="text-center" onkeypress="alert(0)">{{$num}}@php($num++)</td>
-                                    <td>{{$item['kode_produksi']}}</td>
-                                    <td>{{$item['keterangan']}}</td>
-                                    <td class="text-right">{{format_idr($item['harga_jual'])}}</td>
-                                    <td class="text-center">{{$item['qty']}}</td>
-                                    <td class="text-center">{{$item['stock']}}</td>
-                                    <td class="text-right">{{format_idr($item['harga_jual'] * $item['qty']);}}</td>
+                                <tr tabindex="0" title="Klik untuk merubah QTY" style="cursor:pointer;">
+                                    <td class="text-center" onkeypress="alert(0)" wire:click="$emit('edit_item',{{$k}})">{{$num}}@php($num++)</td>
+                                    <td wire:click="$emit('edit_item',{{$k}})">{{$item['kode_produksi']}}</td>
+                                    <td wire:click="$emit('edit_item',{{$k}})">{{$item['keterangan']}}</td>
+                                    <td wire:click="$emit('edit_item',{{$k}})" class="text-right">{{format_idr($item['harga_jual'])}}</td>
+                                    <td wire:click="$emit('edit_item',{{$k}})" class="text-center">{{$item['qty']}}</td>
+                                    <td wire:click="$emit('edit_item',{{$k}})" class="text-center">{{$item['stock']}}</td>
+                                    <td wire:click="$emit('edit_item',{{$k}})" class="text-right">{{format_idr($item['harga_jual'] * $item['qty']);}}</td>
                                     <td class="text-center">
                                         <a href="javascript:void(0)" class="btn btn-danger" wire:click="delete({{$k}})" title="Hapus"><i class="fa fa-close"></i></a>
                                     </td>
