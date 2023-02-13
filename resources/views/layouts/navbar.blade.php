@@ -40,7 +40,7 @@
                                     <li><a href="{{ route('konsinyasi.index') }}">Konsinyasi</a></li>
                                 </ul>
                             </li>
-                            <li><a href="{{route('transaksi.index')}}" class="text-info icon-menu px-1">Supplier</a></li>
+                            <li><a href="{{route('user-supplier.index')}}" class="text-info icon-menu px-1">Supplier</a></li>
                             <li><a href="{{route('transaksi.index')}}" class="text-info icon-menu px-1">PO</a></li>
 
                         @endif

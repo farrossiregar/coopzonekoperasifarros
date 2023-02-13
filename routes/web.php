@@ -101,7 +101,7 @@ Route::group(['middleware' => ['auth','access:1']], function(){
 
     Route::get('user-supplier', App\Http\Livewire\UserSupplier\Index::class)->name('user-supplier.index');
     Route::get('user-supplier/insert', App\Http\Livewire\UserSupplier\Insert::class)->name('user-supplier.insert');
-    Route::get('user-supplier/edit/{id}',App\Http\Livewire\UserSupplier\Edit::class)->name('user-supplier.edit');
+    Route::get('user-supplier/listproduk/{id}',App\Http\Livewire\UserSupplier\Edit::class)->name('user-supplier.edit');
 });
 
 // Administrator dan Kasir

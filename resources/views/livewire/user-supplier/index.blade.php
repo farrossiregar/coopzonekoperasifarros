@@ -6,22 +6,22 @@
                 <div class="col-md-2">
                     <input type="text" class="form-control" wire:model="keyword" placeholder="Pencarian" />
                 </div>
-                <div class="col-md-2 px-0">
+                <!-- <div class="col-md-2 px-0">
                     <select class="form-control" wire:model="status">
                         <option value=""> --- Status --- </option>
                         <option value="1">Inactive</option>
                         <option value="2">Active</option>
                         <option value="5">Keluar</option>
                     </select>
-                </div>
+                </div> -->
                 <div class="col-md-6">
-                    <div class="btn-group" role="group">
+                    <!-- <div class="btn-group" role="group">
                         <button id="btnGroupDrop1" type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Action</button>
                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                             <a class="dropdown-item" href="javascript:void(0);" wire:click="downloadExcel"><i class="fa fa-download"></i> Download</a>
                             <a href="javascript:void(0)" class="dropdown-item" data-toggle="modal" data-target="#modal_upload"><i class="fa fa-upload"></i> Upload</a>
                         </div>
-                    </div>
+                    </div> -->
                     <a href="javascript:void(0)" wire:click="$set('insert',true)" class="btn btn-warning"><i class="fa fa-plus"></i> Supplier</a>
                     <span wire:loading>
                         <i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
@@ -39,7 +39,7 @@
                                 <th>No Telepon</th>
                                 <th>Alamat</th>
                                 <th>Email</th>
-                                <th>Updated At</th>
+                                <th>Created At</th>
                                 <th></th>
                             </tr>
                            
@@ -49,17 +49,25 @@
                                 <tr>
                                     <td></td>
                                     <td>
-                                        <input type="text" class="form-control" wire:model="no_anggota" />
-                                        @error('no_anggota') <span class="text-danger">{{ $message }}</span> @enderror
-                                        @if($error_no_anggota) <span class="text-danger">{{ $error_no_anggota }}</span> @endif
+                                        <input type="text" class="form-control" wire:model="nama_supplier" />
+                                        @error('nama_supplier') <span class="text-danger">{{ $message }}</span> @enderror
+                                        @if($error_nama_supplier) <span class="text-danger">{{ $error_nama_supplier }}</span> @endif
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" wire:model="nama" />
-                                        @error('nama') <span class="text-danger">{{ $message }}</span> @enderror
+                                        <input type="text" class="form-control" wire:model="no_telp" />
+                                        @error('no_telp') <span class="text-danger">{{ $message }}</span> @enderror
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" wire:model="no_telepon" />
-                                        @error('no_telepon') <span class="text-danger">{{ $message }}</span> @enderror
+                                        <input type="text" class="form-control" wire:model="alamat_supplier" />
+                                        @error('alamat_supplier') <span class="text-danger">{{ $message }}</span> @enderror
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" wire:model="email" />
+                                        @error('email') <span class="text-danger">{{ $message }}</span> @enderror
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" value="<?php echo date('Y-m-d H:i:s'); ?>" readonly />
+                                        
                                     </td>
                                     <td>
                                         <a href="javascript:void(0)" wire:click="save" class="btn btn-info"><i class="fa fa-save"></i> Simpan</a>
@@ -71,19 +79,18 @@
                             @foreach($data as $k => $item)
                             <tr>
                                 <td style="width: 50px;">{{$number}}</td>
-                                <td><a href="{{route('user-member.edit',['id'=>$item->id])}}" class="{{$item->status==4?"text-danger" : ""}}">{{$item->no_anggota_platinum?$item->no_anggota_platinum:'-'}}</a></td>
-                                <td>@livewire('user-member.editable',['field'=>'name','data'=>$item->name,'id'=>$item->id],key('name'.$item->id))</td>
-                                <td>@livewire('user-member.editable',['field'=>'phone_number','data'=>$item->phone_number,'id'=>$item->id],key('phone_number'.$item->id))</td>
-                                <td>@livewire('user-member.editable',['field'=>'phone_number','data'=>$item->phone_number,'id'=>$item->id],key('phone_number'.$item->id))</td>
-                                <td>@livewire('user-member.editable',['field'=>'phone_number','data'=>$item->phone_number,'id'=>$item->id],key('phone_number'.$item->id))</td>
-                             
+                                <td><a href="{{route('user-supplier.edit',['id'=>$item->id])}}" class="{{$item->status==4?"text-danger" : ""}}">{{$item->nama_supplier?$item->nama_supplier:'-'}}</a></td>
+                                <td>@livewire('user-supplier.editable',['field'=>'no_telp','data'=>$item->no_telp,'id'=>$item->id],key('no_telp'.$item->id))</td>
+                                <td>@livewire('user-supplier.editable',['field'=>'alamat_supplier','data'=>$item->alamat_supplier,'id'=>$item->id],key('alamat_supplier'.$item->id))</td>
+                                <td>@livewire('user-supplier.editable',['field'=>'email','data'=>$item->email,'id'=>$item->id],key('email'.$item->id))</td>
+                                <td>@livewire('user-supplier.editable',['field'=>'created_at','data'=>$item->created_at,'id'=>$item->id],key('created_at'.$item->id))</td>
+                                
                                 <td>
                                     <div class="btn-group" role="group">
                                         <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-navicon"></i></a>
                                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                                             <a class="dropdown-item" href="{{route('user-member.edit',['id'=>$item->id])}}"><i class="fa fa-search-plus"></i> Detail</a>
                                             <a class="dropdown-item text-danger" href="javascript:void(0)" wire:click="delete({{$item->id}})"><i class="fa fa-trash"></i> Hapus</a>
-                                            <a class="dropdown-item" href="javascript:void(0)" wire:click="set_member({{$item->id}})" data-toggle="modal" data-target="#modal_set_password"><i class="fa fa-key"></i> Set Password</a>
                                         </div>
                                     </div>    
                                 </td>

@@ -5,6 +5,7 @@ namespace App\Http\Livewire\UserSupplier;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\UserMember;
+use App\Models\Supplier;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -14,43 +15,29 @@ class Index extends Component
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
     public $dataMember,$selected,$password,$insert=false;
-    public $no_anggota,$error_no_anggota,$nama,$no_telepon;
+    // public $no_anggota,$error_no_anggota,$nama,$no_telepon;
+    public $nama_supplier, $error_nama_supplier, $no_telp, $alamat_supplier, $email;
     public function render()
     {
-        $data = UserMember::select('user_member.*')->join('users','users.id','=','user_member.user_id')
-                            ->orderBy('user_member.no_anggota_platinum','DESC');
+        $data = Supplier::orderBy('id','DESC');
 
         if($this->keyword){
             $data->where(function($table){
-                foreach(\Illuminate\Support\Facades\Schema::getColumnListing('user_member') as $column){
-                    $table->orWhere("user_member.".$column,'LIKE',"%{$this->keyword}%");
+                foreach(\Illuminate\Support\Facades\Schema::getColumnListing('user_supplier') as $column){
+                    $table->orWhere("user_supplier.".$column,'LIKE',"%{$this->keyword}%");
                 }
             });
         }
         
-        if($this->koordinator_id) $data = $data->where('user_member.koordinator_id',$this->koordinator_id);
-        if($this->status) $data = $data->where('user_member.status',$this->status);
+        // if($this->koordinator_id) $data = $data->where('user_member.koordinator_id',$this->koordinator_id);
+        // if($this->status) $data = $data->where('user_member.status',$this->status);
             
         return view('livewire.user-supplier.index')
                 ->layout('layouts.app')
                 ->with(['data'=>$data->paginate(100)]);
     }
 
-    public function changePassword()
-    {
-        $this->validate([
-            'password' => 'required'
-        ]);
-        $user = User::find($this->selected->user_id);
-        if($user){
-            $user->password = \Hash::make($this->password);
-            $user->save();
-        }
-        
-        session()->flash('message-success',__('Password berhasil dirubah'));
-        
-        return redirect()->to('user-member');
-    }
+  
     
     public function set_member(UserMember $selected)
     {
@@ -59,50 +46,52 @@ class Index extends Component
 
     public function delete($id)
     {
-        UserMember::find($id)->delete();
+        Supplier::find($id)->delete();
     }
 
     public function save()
     {
         $this->validate([
-            'no_anggota'=>'required',
-            'nama'=>'required',
-            'no_telepon'=>'required'
+            'nama_supplier'=>'required',
+            'alamat_supplier'=>'required',
+            'email'=>'required',
+            'no_telp'=>'required'
         ]);
 
-        $find = UserMember::where('no_anggota_platinum',$this->no_anggota)->first();
+        $find = Supplier::where('nama_supplier',$this->nama_supplier)->first();
         if($find){
-            $this->error_no_anggota = 'No Anggota sudah digunakan';
+            $this->error_nama_supplier = 'Nama Supplier sudah ada';
             return;
         }
 
-        $user = new User();
-        $user->user_access_id = 4; // Member
-        $user->name = $this->nama;
-        // $user->email = $this->email;
-        $user->telepon = $this->no_telepon;
-        $user->password = Hash::make('12345678');
-		$user->username = $this->no_anggota;
+        $user                   = new User();
+        $user->user_access_id   = 7; // Supplier
+        $user->name             = $this->nama_supplier;
+        $user->email            = $this->email;
+        $user->telepon          = $this->no_telp;
+        $user->password         = Hash::make('12345678');
+		// $user->username = $this->no_anggota;
         $user->save();
 
-        $data = new UserMember();
-     	$data->no_anggota_platinum = $this->no_anggota;
-     	$data->name = $this->nama;
-     	$data->phone_number = $this->no_telepon;
-        $data->user_id = $user->id;
+        $data                   = new Supplier();
+     	$data->nama_supplier    = $this->nama_supplier;
+     	$data->email            = $this->email;
+     	$data->no_telp          = $this->no_telp;
+     	$data->alamat_supplier  = $this->alamat_supplier;
+        $data->id               = $user->id;
         $data->save();
 
         // Sinkron Coopzone
-        $response = sinkronCoopzone([
-            'url'=>'koperasi/user/insert',
-            'data'=>[
-                'no_anggota'=>$this->no_anggota,
-                'nama'=>$this->nama,
-                'no_telepon'=>$this->no_telepon
-            ],
-        ]);
+        // $response = sinkronCoopzone([
+        //     'url'=>'koperasi/user/insert',
+        //     'data'=>[
+        //         'no_anggota'=>$this->no_anggota,
+        //         'nama'=>$this->nama,
+        //         'no_telepon'=>$this->no_telepon
+        //     ],
+        // ]);
 
-        $this->reset(['no_anggota','nama','no_telepon']);
+        $this->reset(['nama_supplier','email','no_telp','alamat_supplier']);
         $this->insert = false;
     }
     
