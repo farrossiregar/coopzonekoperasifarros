@@ -52,11 +52,7 @@
     <script>
         var verifyCallback = function(response) {
             @this.set('token', response);
-<<<<<<< HEAD
-            $("#btn_submit").trigger('click');
-        };
-    </script> -->
-=======
+
             $("#btn_submit").trigger('click'); 
         };        
     </script>
