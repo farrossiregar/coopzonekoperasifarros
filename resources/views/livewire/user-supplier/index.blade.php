@@ -79,7 +79,7 @@
                             @foreach($data as $k => $item)
                             <tr>
                                 <td style="width: 50px;">{{$number}}</td>
-                                <td><a href="{{route('user-supplier.edit',['id'=>$item->id])}}" class="{{$item->status==4?"text-danger" : ""}}">{{$item->nama_supplier?$item->nama_supplier:'-'}}</a></td>
+                                <td><a href="{{route('user-supplier.listproduk',['id'=>$item->id])}}" class="{{$item->status==4?"text-danger" : ""}}">{{$item->nama_supplier?$item->nama_supplier:'-'}}</a></td>
                                 <td>@livewire('user-supplier.editable',['field'=>'no_telp','data'=>$item->no_telp,'id'=>$item->id],key('no_telp'.$item->id))</td>
                                 <td>@livewire('user-supplier.editable',['field'=>'alamat_supplier','data'=>$item->alamat_supplier,'id'=>$item->id],key('alamat_supplier'.$item->id))</td>
                                 <td>@livewire('user-supplier.editable',['field'=>'email','data'=>$item->email,'id'=>$item->id],key('email'.$item->id))</td>

@@ -59,10 +59,10 @@
                         @if(\Auth::user()->user_access_id==7)
                             <li><a href="{{route('kasir.index')}}" class="text-info icon-menu px-1">Dashboard</a></li>
                             <li class="dropdown">
-                                <a href="#" class="text-info dropdown-toggle icon-menu px-1" data-toggle="dropdown">Produk</a>
-                                <a href="#" class="text-info dropdown-toggle icon-menu px-1" data-toggle="dropdown">Purchase Order</a>
+                                <a href="{{ route('product-supplier.index') }}" class="text-info dropdown-toggle icon-menu px-1" data-toggle="dropdown">Produk</a>
+                                <a href="{{ route('purchase-order-supplier.index') }}" class="text-info dropdown-toggle icon-menu px-1" data-toggle="dropdown">Purchase Order</a>
                             </li>
-                            <li><a href="{{route('kasir.index')}}" class="text-info icon-menu px-1">Kasir</a></li>
+                            <!-- <li><a href="{{route('kasir.index')}}" class="text-info icon-menu px-1">Kasir</a></li> -->
                         @endif
                     </ul>
                 </div>
