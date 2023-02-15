@@ -17,7 +17,7 @@
                 </div> -->
             </div>
             <div class="body pt-0">
-                <div class="table-responsive" style="min-height:400px;">
+                <div class="table-responsive" style="min-height:250px; overflow: scroll;">
                     <table class="table table-hover m-b-0 c_list">
                         <thead style="background: #eee;">                        
                             <tr>
@@ -62,6 +62,100 @@
                     </table>
                 </div>
                 
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="card mb-2">
+            <div class="body">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item"><a class="nav-link active show" data-toggle="tab" href="#tab_pembelian">{{ __('Pembelian') }} </a></li>
+                </ul>
+                <div class="tab-content px-0">
+                    <div class="tab-pane active show" id="tab_pembelian">
+                        <div class="table-responsive">
+                            <div class="row mb-3">
+                                <div class="col-2">
+                                    <input type="text" class="form-control" placeholder="Pencarian" />
+                                </div>
+                                <div class="col-2">
+                                    <!-- <a href="javascript:void(0)" data-toggle="modal" data-target="#modal_form_pembelian" class="btn btn-info"><i class="fa fa-plus"></i> Tambah</a> -->
+                                    <a href="javascript:void(0)" wire:click="$set('insert',true)" class="btn btn-warning"><i class="fa fa-plus"></i> Tambah</a>
+                                </div>
+                            </div>
+                            <table class="table m-b-0 c_list table-hover">
+                                <thead>
+                                    <tr style="background: #eee;">
+                                        <th>No</th>
+                                        <th>Produk</th>
+                                        <th>Harga</th>
+                                        <th>Jumlah</th>
+                                        <th>Diskon</th>
+                                        <th>Total Harga</th>
+                                        <th>Created Date</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if($insert)
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            <input type="text" class="form-control" wire:model="produk" />
+                                            @error('produk') <span class="text-danger">{{ $message }}</span> @enderror
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" wire:model="price" />
+                                            @error('price') <span class="text-danger">{{ $message }}</span> @enderror
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" wire:model="qty" />
+                                            @error('qty') <span class="text-danger">{{ $message }}</span> @enderror
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" wire:model="diskon" />
+                                            @error('diskon') <span class="text-danger">{{ $message }}</span> @enderror
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" wire:model="total_price" readonly />
+                                            @error('total_price') <span class="text-danger">{{ $message }}</span> @enderror
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" value="<?php echo date('Y-m-d H:i:s'); ?>" readonly />
+                                            
+                                        </td>
+                                        <td>
+                                            <a href="javascript:void(0)" wire:click="save" class="btn btn-info"><i class="fa fa-save"></i> Simpan</a>
+                                            <a href="javascript:void(0)" wire:click="$set('insert',false)" class="btn btn-danger"><i class="fa fa-close"></i> Batal</a>
+                                        </td>
+                                    </tr>
+                                    @endif
+                                    @foreach($data as $k => $item)
+                                        <tr>
+                                            <td>{{$k+1}}</td>
+                                            <td>{{$item->item}}</td>
+                                            <td>{{$item->price}}</td>
+                                            <td>{{$item->qty}}</td>
+                                            <td>{{$item->disc}}</td>
+                                            <td>{{$item->total_price}}</td>
+                                            <td>{{$item->created_at}}</td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-navicon"></i></a>
+                                                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                                        <a class="dropdown-item text-danger" href="javascript:void(0)" wire:click="delete({{$item->id}})"><i class="fa fa-trash"></i> Hapus</a>
+                                                    </div>
+                                                </div>    
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                </div>
             </div>
         </div>
     </div>
